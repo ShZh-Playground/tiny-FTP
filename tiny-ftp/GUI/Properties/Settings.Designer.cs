@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace tiny_ftp.Properties
+namespace GUI.Properties
 {
 
 
