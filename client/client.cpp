@@ -5,14 +5,26 @@
 #define _DLL_EXPORTS
 #include "client.h"
 
+const std::string CRLF = "\r\n";
 const unsigned int kBufferSize = 1024;
 
-Client::Client(const std::string ip_address, unsigned int port=21) {
+Client::Client(const std::string& ip_address, unsigned int port=21) {
   this->control_socket_ = FTPSocket(ip_address, port);
   std::cout << ReceiveMessage() << std::endl;
 }
 
 Client::~Client() {}
+
+void Client::Login(const std::string& username, const std::string& password) {
+	// 先传输用户名
+	const std::string username_message = "USER " + username + CRLF;
+	this->control_socket_.SendData(username_message);
+	std::cout << ReceiveMessage() << std::endl;
+	// 再传输密码
+	const std::string password_message = "PASS " + password + CRLF;
+	this->control_socket_.SendData(password_message);
+	std::cout << ReceiveMessage() << std::endl;
+}
 
 const std::string Client::ReceiveMessage() {
   int length;

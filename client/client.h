@@ -11,7 +11,8 @@
 
 class IClient {
  public:
-	virtual const std::string ReceiveMessage()=0;	
+	virtual const std::string ReceiveMessage()=0;
+  virtual void Login(const std::string&, const std::string&)=0;
 };
 
 class Client: public IClient {
@@ -20,11 +21,10 @@ class Client: public IClient {
   FTPSocket data_socket_;
 
  public:
-  Client(const std::string ip_address, unsigned int port);
+  Client(const std::string& ip_address, unsigned int port);
   ~Client();
 
-  // void login(const std::string username=nullptr, const std::string
-  // password=nullptr);
+  void Login(const std::string& username, const std::string& password);
   const std::string ReceiveMessage();
   // void download_file();
 };
