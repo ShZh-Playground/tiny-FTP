@@ -152,6 +152,7 @@
     <ClInclude Include="client\utils.h" />
     <ClInclude Include="data_types\dir.h" />
     <ClInclude Include="data_types\path_info.h" />
+    <ClInclude Include="socket\control_socket.h" />
     <ClInclude Include="socket\data_socket.h" />
     <ClInclude Include="socket\ftp_socket.h" />
     <ClInclude Include="stdafx.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="client\client.cpp" />
     <ClCompile Include="data_types\dir.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="socket\control_socket.cpp" />
     <ClCompile Include="socket\data_socket.cpp" />
     <ClCompile Include="socket\ftp_socket.cpp" />
     <ClCompile Include="main.cpp" />

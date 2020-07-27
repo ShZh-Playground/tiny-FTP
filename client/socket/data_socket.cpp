@@ -9,14 +9,21 @@ std::string DataSocket::GetResponse() {
   std::string result;
   int length = 0;
 
-  char receive_buffer[kBufferSize] = {0};
-  while ((length = this->socket_.ReceiveData(receive_buffer, kBufferSize)) !=
-         0) {
+  char receive_buffer[this->socket_.kBufferSize] = {0};
+  while ((length = this->socket_.ReceiveData(receive_buffer,
+                                             this->socket_.kBufferSize)) != 0) {
     result += std::string(receive_buffer, length);
   }
   return result;
 }
 
-void DataSocket::Send(std::string send_data) { this->socket_.SendData(send_data); }
+void DataSocket::Send(std::string send_data) {
+  this->socket_.SendData(send_data);
+}
+
+unsigned int DataSocket::Receive(char* receive_buffer,
+                                 unsigned int buffer_size) {
+  return this->socket_.ReceiveData(receive_buffer, buffer_size);
+}
 
 void DataSocket::Close() { this->socket_.Close(); }

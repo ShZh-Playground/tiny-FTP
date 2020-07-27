@@ -7,7 +7,6 @@ class DataSocket {
  private:
   enum Mode { PASV, PORT_STRICT, PORT };
 
-  static const unsigned int kBufferSize = 1024;
   FTPSocket socket_;
 
  public:
@@ -18,7 +17,8 @@ class DataSocket {
 
   std::string GetResponse();
 
-	void Send (std::string send_data);
+	void Send(std::string send_data);
+  unsigned int Receive(char* receive_buffer, unsigned int buffer_size);
 
 	void Close();
 };

@@ -9,6 +9,7 @@ class FTPSocket {
   sockaddr_in socaddr_;
 
  public:
+  static const unsigned int kBufferSize = 1024;
 	FTPSocket() {};
   FTPSocket(const std::string ip_address, unsigned int port);
   ~FTPSocket();
