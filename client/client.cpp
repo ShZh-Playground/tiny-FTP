@@ -1,41 +1,46 @@
 #include "stdafx.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #define _DLL_EXPORTS
 #include "client.h"
 
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using std::ofstream;
-using std::ifstream;
+using namespace std;
 
 const string CRLF = "\r\n";
 const unsigned int kBufferSize = 1024;
 
+#define PrintMessage                            \
+  do {                                          \
+    std::cout << ReceiveMessage() << std::endl; \
+  } while (0)
 
-#define PrintMessage \
-	do {	\
-		std::cout << ReceiveMessage() << std::endl;	\
-	} while(0)
+#define SendControlMessage(command)          \
+  do {                                       \
+    const string message = command + CRLF;   \
+    this->control_socket_.SendData(message); \
+    PrintMessage;                            \
+  } while (0)
 
+#define CloseDataSocket         \
+  do {                          \
+    this->data_socket_.Close(); \
+    PrintMessage;               \
+  } while (0)
 
-Client::Client(const string& ip_address, unsigned int port=21)
-    : ip_address_(ip_address), control_socket_(FTPSocket(ip_address, port)) { PrintMessage; }
-
+Client::Client(const string& ip_address, unsigned int port = 21)
+    : ip_address_(ip_address), control_socket_(FTPSocket(ip_address, port)) {
+  PrintMessage;
+}
 
 Client::~Client() {
   // 给服务器发送QUIT并关闭socket
-  const string close_message = "QUIT" + CRLF;
-  this->control_socket_.SendData(close_message);
-  PrintMessage;
+  SendControlMessage("QUIT");
   this->control_socket_.Close();
 }
-
 
 const string Client::ReceiveMessage() {
   int length;
@@ -47,66 +52,88 @@ const string Client::ReceiveMessage() {
   return buffer;
 }
 
-
 void Client::Login(const string& username, const string& password) {
-  // 先传输用户名
-  const string username_message = "USER " + username + CRLF;
-  this->control_socket_.SendData(username_message);
-  PrintMessage;
-  // 再传输密码
-  const string password_message = "PASS " + password + CRLF;
-  this->control_socket_.SendData(password_message);
-  PrintMessage;
+  // 先传输用户名，再传密码（这里有先后顺序）
+  SendControlMessage("USER " + username);
+  SendControlMessage("PASS " + password);
 }
 
+vector<string> Client::GetDirList() {
+  EnterPassiveMode();
+  SendControlMessage("LIST");
+  // 接受返回来的data_socket返回的所有输出
+  int length;
+  stringstream dir_info;
+  char receive_buffer[kBufferSize] = {0};
+  while ((length = this->data_socket_.ReceiveData(receive_buffer,
+                                                  kBufferSize)) != 0) {
+    dir_info << string(receive_buffer, length);
+  }
+  // 返回的格式类似于cmd dir指令（Windows系统）
+  string line;
+  stringstream line_resovler;
+  vector<string> file_property(4);
+  vector<string> files_in_dir;
+  // TODO: DirTypes(我不知道我自定义的格式C#能否使用)
+  while (!dir_info.eof()) {
+    getline(dir_info, line);  // 获取每一行
+    if (!dir_info.eof()) {    // 舍弃最后一空白行
+      line_resovler << line;
+      line_resovler >> file_property[0] >> file_property[1] >>
+          file_property[2] >> file_property[3];  // 每行用空格分隔四个信息
+      files_in_dir.push_back(file_property[3]);  // 最后一个为文件/文件夹名
+    }
+  }
+  CloseDataSocket;
+  return files_in_dir;
+}
+
+unsigned int Client::GetFileSize(const std::string& filename) {
+	SendControlMessage("SIZE " + filename);
+}
 
 void Client::DownloadFile(const string& filename) {
-	EnterPassiveMode();	// 先进入被动模式
-	const string download_message = "RETR " + filename + CRLF;
-	this->control_socket_.SendData(download_message);
-  PrintMessage;
-	// 创建文件
-	auto file = ofstream(filename, std::ios::out || std::ios::binary);
-	if (!file) {
-		cout << "未能打开文件!" << endl;
-		exit(1);
-	}
-	// 通过接受流来完成下载
-	int length = 0;
-	char receive_buffer[kBufferSize] = {0};
-	while ((length = this->data_socket_.ReceiveData(receive_buffer, kBufferSize)) != 0) {
-		for (int i = 0; i < length; ++i) {
-			file << receive_buffer[i];
-		}
-	}
-	file.close();
-	this->data_socket_.Close();
-	PrintMessage;
+  EnterPassiveMode();  // 先进入被动模式
+  SendControlMessage("RETR " + filename);
+  // 创建文件
+  auto file = ofstream(filename, ios::out || ios::binary);
+  if (!file) {
+    cout << "未能打开文件!" << endl;
+    exit(1);
+  }
+  // 通过接受流来完成下载
+  int length = 0;
+  char receive_buffer[kBufferSize] = {0};
+  while ((length = this->data_socket_.ReceiveData(receive_buffer,
+                                                  kBufferSize)) != 0) {
+    for (int i = 0; i < length; ++i) {
+      file << receive_buffer[i];
+    }
+  }
+  file.close();
+  CloseDataSocket;
 }
 
-
-void Client::UploadFile(const std::string& filename) {
-	EnterPassiveMode();	// 先进入被动模式
-	const string upload_message = "STOR " + filename + CRLF;
-	this->control_socket_.SendData(upload_message);
-	PrintMessage;
-	// 打开文件
-	auto file = ifstream(filename, std::ios::in || std::ios::binary);
-	if (!file) {
-		cout << "未能找到文件！" << endl;
-		exit(1);
-	}
-	// 通过读取文件内容并发送来完成上传
-	char send_buffer[kBufferSize] = {0};
-	while (!file.eof()) {
-		file.read(send_buffer, kBufferSize);
-		this->data_socket_.SendData(std::string(send_buffer));
-	}
-	file.close();
-	this->data_socket_.Close();
-	PrintMessage;
+void Client::UploadFile(const string& filename) {
+  EnterPassiveMode();  // 先进入被动模式
+  SendControlMessage("STOR " + filename);
+  // 打开文件
+  auto file = ifstream(filename, ios::in || ios::binary);
+  if (!file) {
+    cout << "未能找到文件！" << endl;
+    exit(1);
+  }
+  // 通过读取文件内容并发送来完成上传
+  char send_buffer[kBufferSize] = {0};
+  while (!file.eof()) {
+    file.read(send_buffer, kBufferSize);
+    this->data_socket_.SendData(string(send_buffer));
+  }
+  file.close();
+  CloseDataSocket;
 }
 
+//////////////////////////////////////////PrivateMethod/////////////////////////////////////////////
 
 void Client::EnterPassiveMode() {
   // 向服务器传输进入被动模式的指令
@@ -120,7 +147,6 @@ void Client::EnterPassiveMode() {
   cout << target_port << endl;
   this->data_socket_ = FTPSocket(this->ip_address_, target_port);
 }
-
 
 unsigned int Client::ResolveDataSocketPort(const string& data_socket_info) {
   // 找到()中的内容
@@ -143,7 +169,6 @@ unsigned int Client::ResolveDataSocketPort(const string& data_socket_info) {
 
   return target_port;
 }
-
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {
   return new Client(ip_address);
