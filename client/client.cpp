@@ -3,17 +3,20 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #define _DLL_EXPORTS
 #include "client.h"
 
 using std::cout;
 using std::endl;
+using std::vector;
 using std::string;
 using std::ofstream;
 using std::ifstream;
 
 const string CRLF = "\r\n";
 const unsigned int kBufferSize = 1024;
+
 
 #define PrintMessage \
 	do {	\
@@ -44,6 +47,7 @@ const string Client::ReceiveMessage() {
   return buffer;
 }
 
+
 void Client::Login(const string& username, const string& password) {
   // 先传输用户名
   const string username_message = "USER " + username + CRLF;
@@ -58,11 +62,11 @@ void Client::Login(const string& username, const string& password) {
 
 void Client::DownloadFile(const string& filename) {
 	EnterPassiveMode();	// 先进入被动模式
-	const string upload_message = "RETR " + filename + CRLF;
-	this->control_socket_.SendData(upload_message);
+	const string download_message = "RETR " + filename + CRLF;
+	this->control_socket_.SendData(download_message);
   PrintMessage;
 	// 创建文件
-	auto file = ofstream(filename, std::ios::out);
+	auto file = ofstream(filename, std::ios::out || std::ios::binary);
 	if (!file) {
 		cout << "未能打开文件!" << endl;
 		exit(1);
@@ -74,6 +78,29 @@ void Client::DownloadFile(const string& filename) {
 		for (int i = 0; i < length; ++i) {
 			file << receive_buffer[i];
 		}
+	}
+	file.close();
+	this->data_socket_.Close();
+	PrintMessage;
+}
+
+
+void Client::UploadFile(const std::string& filename) {
+	EnterPassiveMode();	// 先进入被动模式
+	const string upload_message = "STOR " + filename + CRLF;
+	this->control_socket_.SendData(upload_message);
+	PrintMessage;
+	// 打开文件
+	auto file = ifstream(filename, std::ios::in || std::ios::binary);
+	if (!file) {
+		cout << "未能找到文件！" << endl;
+		exit(1);
+	}
+	// 通过读取文件内容并发送来完成上传
+	char send_buffer[kBufferSize] = {0};
+	while (!file.eof()) {
+		file.read(send_buffer, kBufferSize);
+		this->data_socket_.SendData(std::string(send_buffer));
 	}
 	file.close();
 	this->data_socket_.Close();
@@ -93,6 +120,7 @@ void Client::EnterPassiveMode() {
   cout << target_port << endl;
   this->data_socket_ = FTPSocket(this->ip_address_, target_port);
 }
+
 
 unsigned int Client::ResolveDataSocketPort(const string& data_socket_info) {
   // 找到()中的内容
@@ -115,6 +143,7 @@ unsigned int Client::ResolveDataSocketPort(const string& data_socket_info) {
 
   return target_port;
 }
+
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {
   return new Client(ip_address);

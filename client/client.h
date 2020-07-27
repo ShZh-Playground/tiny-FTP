@@ -18,7 +18,7 @@ class IClient {
 	virtual const std::string ReceiveMessage()=0;
   virtual void Login(const std::string& username, const std::string& password)=0;
 	virtual void DownloadFile(const std::string& filename)=0;
-  // virtual void UploadFile(const std::string& filename)=0;
+  virtual void UploadFile(const std::string& filename)=0;
 };
 
 class Client: public IClient {
@@ -37,7 +37,7 @@ class Client: public IClient {
   void Login(const std::string&, const std::string&);
   const std::string ReceiveMessage();
   void DownloadFile(const std::string& filename);
-  // void UploadFile(const std::string& filename);
+  void UploadFile(const std::string& filename);
 };
 
 extern "C" DLL_API IClient* GetClient(const std::string ip_address);

@@ -8,9 +8,12 @@
 
 int main()
 {
+	// 加速
+  std::iostream::sync_with_stdio(false);
+
 	IClient* client = GetClient("192.168.176.1");
 	client->Login("shzh", "123456");
-	client->DownloadFile("zj.m");
+	client->UploadFile("fuck.txt");
 	delete client;
 	return 0;
 }
