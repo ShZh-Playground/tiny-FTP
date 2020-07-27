@@ -85,7 +85,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -148,21 +148,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="client.h" />
-    <ClInclude Include="data_socket.h" />
-    <ClInclude Include="dir.h" />
-    <ClInclude Include="path_info.h" />
-    <ClInclude Include="ftp_socket.h" />
+    <ClInclude Include="client\client.h" />
+    <ClInclude Include="client\utils.h" />
+    <ClInclude Include="data_types\dir.h" />
+    <ClInclude Include="data_types\path_info.h" />
+    <ClInclude Include="socket\data_socket.h" />
+    <ClInclude Include="socket\ftp_socket.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client.cpp" />
-    <ClCompile Include="data_socket.cpp" />
-    <ClCompile Include="dir.cpp" />
+    <ClCompile Include="client\client.cpp" />
+    <ClCompile Include="data_types\dir.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ftp_socket.cpp" />
+    <ClCompile Include="socket\data_socket.cpp" />
+    <ClCompile Include="socket\ftp_socket.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

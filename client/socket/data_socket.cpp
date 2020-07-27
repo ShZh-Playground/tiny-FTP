@@ -1,4 +1,4 @@
-#include "stdafx.h"
+// #include "stdafx.h"
 #include "data_socket.h"
 
 DataSocket::DataSocket(const std::string& ip_address, unsigned int port)

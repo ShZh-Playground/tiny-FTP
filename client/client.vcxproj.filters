@@ -21,22 +21,22 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ftp_socket.h">
+    <ClInclude Include="data_types\dir.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="client.h">
+    <ClInclude Include="data_types\path_info.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="socket\data_socket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="data_socket.h">
+    <ClInclude Include="socket\ftp_socket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="dir.h">
+    <ClInclude Include="client\client.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="path_info.h">
+    <ClInclude Include="client\utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,19 +47,19 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ftp_socket.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="client.cpp">
+    <ClCompile Include="data_types\dir.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="data_socket.cpp">
+    <ClCompile Include="socket\data_socket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="dir.cpp">
+    <ClCompile Include="socket\ftp_socket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="client\client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

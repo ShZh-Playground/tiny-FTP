@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 
 #include <fstream>
 #include <iostream>
@@ -6,11 +6,11 @@
 #include <string>
 #include <vector>
 #define _DLL_EXPORTS
-#include "data_socket.h"
+#include "../socket/data_socket.h"
 #include "client.h"
 #include "utils.h"
-#include "dir.h"
-#include "path_info.h"
+#include "../data_types/dir.h"
+#include "../data_types/path_info.h"
 
 using namespace std;
 

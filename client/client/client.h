@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include "ftp_socket.h"
-#include "data_socket.h"
+#include "../socket/ftp_socket.h"
+#include "../socket/data_socket.h"
 
 #ifdef _DLL_EXPORTS
 #define DLL_API _declspec(dllexport)
