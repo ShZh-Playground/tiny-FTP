@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #define _DLL_EXPORTS
+#include "data_socket.h"
 #include "client.h"
 #include "utils.h"
 
@@ -42,13 +43,14 @@ vector<string> Client::GetDirList() {
   EnterPassiveMode();
   SendControlMessage("LIST");
   // 接受返回来的data_socket返回的所有输出
-  int length;
   stringstream dir_info;
-  char receive_buffer[kBufferSize] = {0};
-  while ((length = this->data_socket_.ReceiveData(receive_buffer,
-                                                  kBufferSize)) != 0) {
-    dir_info << string(receive_buffer, length);
-  }
+  // int length;
+  // char receive_buffer[kBufferSize] = {0};
+  //while ((length = this->data_socket_.ReceiveData(receive_buffer,
+  //                                                kBufferSize)) != 0) {
+  //  dir_info << string(receive_buffer, length);
+  //}
+	dir_info << this->data_socket_.GetResponse();
   // 返回的格式类似于cmd dir指令（Windows系统）
   string line;
   stringstream line_resovler;
@@ -87,15 +89,16 @@ void Client::DownloadFile(const string& filename) {
     cout << "未能打开文件!" << endl;
     exit(1);
   }
-  // 通过接受流来完成下载
-  int length = 0;
-  char receive_buffer[kBufferSize] = {0};
-  while ((length = this->data_socket_.ReceiveData(receive_buffer,
-                                                  kBufferSize)) != 0) {
-    for (int i = 0; i < length; ++i) {
-      file << receive_buffer[i];
-    }
-  }
+  //// 通过接受流来完成下载
+  //int length = 0;
+  //char receive_buffer[kBufferSize] = {0};
+  //while ((length = this->data_socket_.ReceiveData(receive_buffer,
+  //                                                kBufferSize)) != 0) {
+  //  for (int i = 0; i < length; ++i) {
+  //    file << receive_buffer[i];
+  //  }
+  //}
+	file << this->data_socket_.GetResponse();
   file.close();
   CloseDataSocket;
 }
@@ -113,7 +116,7 @@ void Client::UploadFile(const string& filename) {
   char send_buffer[kBufferSize] = {0};
   while (!file.eof()) {
     file.read(send_buffer, kBufferSize);
-    this->data_socket_.SendData(string(send_buffer));
+    this->data_socket_.Send(string(send_buffer));
   }
   file.close();
   CloseDataSocket;
@@ -131,7 +134,7 @@ void Client::EnterPassiveMode() {
   // 计算端口号并创建数字套接字
   unsigned int target_port = ResolveDataSocketPort(data_socket_info);
   cout << target_port << endl;
-  this->data_socket_ = FTPSocket(this->ip_address_, target_port);
+  this->data_socket_ = DataSocket(this->ip_address_, target_port);
 }
 
 unsigned int Client::ResolveDataSocketPort(const string& data_socket_info) {

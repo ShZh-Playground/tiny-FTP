@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "ftp_socket.h"
+#include "data_socket.h"
 
 #ifdef _DLL_EXPORTS
 #define DLL_API _declspec(dllexport)
@@ -28,7 +29,7 @@ class Client: public IClient {
  private:
 	const std::string ip_address_;
   FTPSocket control_socket_;
-  FTPSocket data_socket_;
+  DataSocket data_socket_;
 
 	void EnterPassiveMode();
   unsigned int ResolveDataSocketPort(const std::string&);
