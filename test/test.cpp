@@ -15,11 +15,13 @@ int main()
   IClient* client = GetClient("192.168.176.1");
   client->Login("shzh", "123456");
 
-	// 开始
-	auto file_names = client->GetDirList();
-	for (auto file : file_names) {
-		cout << file << endl;
-	}
+	// // 开始
+	//auto file_names = client->GetDirList();
+	//for (auto file : file_names) {
+	//	cout << file << endl;
+	//}
+
+	cout << "FileSize: " << client->GetFileSize("zj.m") << endl;
 
 	// 结束
 	delete client;

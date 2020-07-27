@@ -7,29 +7,9 @@
 #include <vector>
 #define _DLL_EXPORTS
 #include "client.h"
+#include "utils.h"
 
 using namespace std;
-
-const string CRLF = "\r\n";
-const unsigned int kBufferSize = 1024;
-
-#define PrintMessage                            \
-  do {                                          \
-    std::cout << ReceiveMessage() << std::endl; \
-  } while (0)
-
-#define SendControlMessage(command)          \
-  do {                                       \
-    const string message = command + CRLF;   \
-    this->control_socket_.SendData(message); \
-    PrintMessage;                            \
-  } while (0)
-
-#define CloseDataSocket         \
-  do {                          \
-    this->data_socket_.Close(); \
-    PrintMessage;               \
-  } while (0)
 
 Client::Client(const string& ip_address, unsigned int port = 21)
     : ip_address_(ip_address), control_socket_(FTPSocket(ip_address, port)) {
@@ -89,7 +69,13 @@ vector<string> Client::GetDirList() {
 }
 
 unsigned int Client::GetFileSize(const std::string& filename) {
-	SendControlMessage("SIZE " + filename);
+  const string file_size_message = "SIZE " + filename + CRLF;
+  this->control_socket_.SendData(file_size_message);
+  stringstream file_size_info;
+	file_size_info << ReceiveMessage();
+	int numbers[2];
+	file_size_info >> numbers[0] >> numbers[1];
+	return numbers[1];
 }
 
 void Client::DownloadFile(const string& filename) {
