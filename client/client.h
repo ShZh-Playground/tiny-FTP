@@ -17,8 +17,12 @@ class IClient {
 
 class Client: public IClient {
  private:
+	const std::string ip_address_;
   FTPSocket control_socket_;
   FTPSocket data_socket_;
+
+	void EnterPassiveMode();
+  unsigned int ResolveDataSocketPort(const std::string& data_socket_info);
 
  public:
   Client(const std::string& ip_address, unsigned int port);
