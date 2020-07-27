@@ -2,8 +2,4 @@
 
 #include "stdafx.h"
 #include "ftp_socket.h"
-
-
-int main() {
-	
-}
+#include "client.h"
