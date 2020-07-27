@@ -11,7 +11,7 @@
 
 class IClient {
  public:
-	virtual std::string receive_message()=0;	
+	virtual const std::string ReceiveMessage()=0;	
 };
 
 class Client: public IClient {
@@ -25,7 +25,7 @@ class Client: public IClient {
 
   // void login(const std::string username=nullptr, const std::string
   // password=nullptr);
-  std::string receive_message();
+  const std::string ReceiveMessage();
   // void download_file();
 };
 

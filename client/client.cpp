@@ -9,16 +9,16 @@ const unsigned int kBufferSize = 1024;
 
 Client::Client(const std::string ip_address, unsigned int port=21) {
   this->control_socket_ = FTPSocket(ip_address, port);
-  std::cout << receive_message() << std::endl;
+  std::cout << ReceiveMessage() << std::endl;
 }
 
 Client::~Client() {}
 
-std::string Client::receive_message() {
+const std::string Client::ReceiveMessage() {
   int length;
 	char buffer[kBufferSize] = {0};
 
-	if ((length = this->control_socket_.receive_data(buffer, kBufferSize)) == -1) {
+	if ((length = this->control_socket_.ReceiveData(buffer, kBufferSize)) == -1) {
 		std::cout << "没有接收到数据" << std::endl;
 	}
 	return buffer;

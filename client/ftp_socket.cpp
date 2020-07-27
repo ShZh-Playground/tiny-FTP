@@ -35,13 +35,13 @@ FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
 
 FTPSocket::~FTPSocket() {}
 
-void FTPSocket::send_data(const std::string send_data) {
+void FTPSocket::SendData(const std::string send_data) {
   const char* send_data_c = send_data.c_str();
   send(this->socket_, send_data_c, strlen(send_data_c), 0);
 }
 
-int FTPSocket::receive_data(char* receive_buffer, unsigned int buffer_size) {
+int FTPSocket::ReceiveData(char* receive_buffer, unsigned int buffer_size) {
   return recv(this->socket_, receive_buffer, buffer_size, 0);
 }
 
-void FTPSocket::close() { closesocket(this->socket_); }
+void FTPSocket::Close() { closesocket(this->socket_); }
