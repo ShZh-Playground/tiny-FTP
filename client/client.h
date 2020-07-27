@@ -9,6 +9,7 @@
 #define DLL_API _declspec(dllimport)
 #endif
 
+// 利用COM的思想，使用接口导出其子类
 class IClient {
  public:
 	// 让子类调用其析构函数，释放子类的资源
@@ -16,6 +17,8 @@ class IClient {
 
 	virtual const std::string ReceiveMessage()=0;
   virtual void Login(const std::string& username, const std::string& password)=0;
+	virtual void DownloadFile(const std::string& filename)=0;
+  // virtual void UploadFile(const std::string& filename)=0;
 };
 
 class Client: public IClient {
@@ -33,7 +36,8 @@ class Client: public IClient {
 
   void Login(const std::string&, const std::string&);
   const std::string ReceiveMessage();
-  // void download_file();
+  void DownloadFile(const std::string& filename);
+  // void UploadFile(const std::string& filename);
 };
 
 extern "C" DLL_API IClient* GetClient(const std::string ip_address);

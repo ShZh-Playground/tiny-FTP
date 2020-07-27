@@ -10,6 +10,7 @@ int main()
 {
 	IClient* client = GetClient("192.168.176.1");
 	client->Login("shzh", "123456");
+	client->DownloadFile("zj.m");
 	delete client;
 	return 0;
 }
