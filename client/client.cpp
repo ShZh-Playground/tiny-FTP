@@ -15,9 +15,12 @@ Client::Client(const std::string ip_address, unsigned int port=21) {
 Client::~Client() {}
 
 std::string Client::receive_message() {
+  int length;
 	char buffer[kBufferSize] = {0};
-	int length = this->control_socket_.receive_data(buffer, kBufferSize);
-	// std::cout << buffer << std::endl;
+
+	if ((length = this->control_socket_.receive_data(buffer, kBufferSize)) == -1) {
+		std::cout << "没有接收到数据" << std::endl;
+	}
 	return buffer;
 }
 

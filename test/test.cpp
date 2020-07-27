@@ -9,5 +9,5 @@
 int main()
 {
 	IClient* client = GetClient("192.168.176.1");
-  std::cout << client->receive_message() << std::endl;
+	return 0;
 }
