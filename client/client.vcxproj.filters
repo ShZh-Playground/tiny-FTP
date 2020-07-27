@@ -33,6 +33,12 @@
     <ClInclude Include="data_socket.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="dir.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="path_info.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="data_socket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dir.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,6 +9,8 @@
 #include "data_socket.h"
 #include "client.h"
 #include "utils.h"
+#include "dir.h"
+#include "path_info.h"
 
 using namespace std;
 
@@ -44,30 +46,21 @@ vector<string> Client::GetDirList() {
   SendControlMessage("LIST");
   // 接受返回来的data_socket返回的所有输出
   stringstream dir_info;
-  // int length;
-  // char receive_buffer[kBufferSize] = {0};
-  //while ((length = this->data_socket_.ReceiveData(receive_buffer,
-  //                                                kBufferSize)) != 0) {
-  //  dir_info << string(receive_buffer, length);
-  //}
 	dir_info << this->data_socket_.GetResponse();
   // 返回的格式类似于cmd dir指令（Windows系统）
+  Dir dir;
   string line;
   stringstream line_resovler;
-  vector<string> file_property(4);
-  vector<string> files_in_dir;
-  // TODO: DirTypes(我不知道我自定义的格式C#能否使用)
   while (!dir_info.eof()) {
     getline(dir_info, line);  // 获取每一行
     if (!dir_info.eof()) {    // 舍弃最后一空白行
       line_resovler << line;
-      line_resovler >> file_property[0] >> file_property[1] >>
-          file_property[2] >> file_property[3];  // 每行用空格分隔四个信息
-      files_in_dir.push_back(file_property[3]);  // 最后一个为文件/文件夹名
+			PathInfo pi(line_resovler);
+      dir.Push(pi);
     }
   }
   CloseDataSocket;
-  return files_in_dir;
+  return dir.GetFilesName();
 }
 
 unsigned int Client::GetFileSize(const std::string& filename) {
@@ -89,15 +82,6 @@ void Client::DownloadFile(const string& filename) {
     cout << "未能打开文件!" << endl;
     exit(1);
   }
-  //// 通过接受流来完成下载
-  //int length = 0;
-  //char receive_buffer[kBufferSize] = {0};
-  //while ((length = this->data_socket_.ReceiveData(receive_buffer,
-  //                                                kBufferSize)) != 0) {
-  //  for (int i = 0; i < length; ++i) {
-  //    file << receive_buffer[i];
-  //  }
-  //}
 	file << this->data_socket_.GetResponse();
   file.close();
   CloseDataSocket;

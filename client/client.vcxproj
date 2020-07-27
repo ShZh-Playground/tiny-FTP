@@ -150,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="client.h" />
     <ClInclude Include="data_socket.h" />
+    <ClInclude Include="dir.h" />
+    <ClInclude Include="path_info.h" />
     <ClInclude Include="ftp_socket.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -158,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="client.cpp" />
     <ClCompile Include="data_socket.cpp" />
+    <ClCompile Include="dir.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ftp_socket.cpp" />
     <ClCompile Include="stdafx.cpp">
