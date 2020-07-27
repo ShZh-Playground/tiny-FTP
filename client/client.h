@@ -11,8 +11,11 @@
 
 class IClient {
  public:
+	// 让子类调用其析构函数，释放子类的资源
+	virtual ~IClient() {}
+
 	virtual const std::string ReceiveMessage()=0;
-  virtual void Login(const std::string&, const std::string&)=0;
+  virtual void Login(const std::string& username, const std::string& password)=0;
 };
 
 class Client: public IClient {
@@ -22,13 +25,13 @@ class Client: public IClient {
   FTPSocket data_socket_;
 
 	void EnterPassiveMode();
-  unsigned int ResolveDataSocketPort(const std::string& data_socket_info);
+  unsigned int ResolveDataSocketPort(const std::string&);
 
  public:
   Client(const std::string& ip_address, unsigned int port);
   ~Client();
 
-  void Login(const std::string& username, const std::string& password);
+  void Login(const std::string&, const std::string&);
   const std::string ReceiveMessage();
   // void download_file();
 };
