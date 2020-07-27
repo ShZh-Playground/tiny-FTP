@@ -1,4 +1,3 @@
-// #include "stdafx.h"
 #include "dir.h"
 
 void Dir::Push(const PathInfo& pi) {
