@@ -42,6 +42,14 @@ bool Client::RemoveFile(const std::string& filename) {
 	return this->control_socket_.GetStatus() == 250;
 }
 
+bool Client::RemoveDir(const std::string& dirname) {
+	return true; }
+
+bool Client::MakeDir(const std::string& dirname) {
+	SendControlMessage("MKD " + dirname);
+	return this->control_socket_.GetStatus() == 257;
+}
+
 vector<string> Client::GetDirList() {
   EnterPassiveMode();
   SendControlMessage("LIST");
@@ -118,6 +126,11 @@ void Client::EnterPassiveMode() {
   cout << data_socket_info << endl;
   // 计算端口号并创建数字套接字
 	this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_, data_socket_info);
+}
+
+void Client::GetListByMLSD() {
+	EnterPassiveMode();
+	SendControlMessage("MLSD /");
 }
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {
