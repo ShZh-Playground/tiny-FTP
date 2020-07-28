@@ -30,6 +30,13 @@ void Client::Login(const string& username, const string& password) {
   SendControlMessage("PASS " + password);
 }
 
+bool Client::Rename(const std::string& old_name, const std::string& new_name) {
+	SendControlMessage("RNFR " + old_name);
+	if (this->control_socket_.GetStatus() != 350) return false;
+	SendControlMessage("RNTO " + new_name);
+  return this->control_socket_.GetStatus() == 250;
+}
+
 vector<string> Client::GetDirList() {
   EnterPassiveMode();
   SendControlMessage("LIST");

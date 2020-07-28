@@ -20,6 +20,7 @@ class IClient {
 	// virtual const std::string ReceiveMessage()=0;
   virtual void Login(const std::string& username, const std::string& password)=0;
   virtual std::vector<std::string> GetDirList() = 0;
+  virtual bool Rename(const std::string& old_name, const std::string& new_name)=0;
 	virtual unsigned int GetFileSize(const std::string& filename)=0;
 	virtual void DownloadFile(const std::string& filename)=0;
   virtual void UploadFile(const std::string& filename)=0;
@@ -39,10 +40,14 @@ class Client: public IClient {
 
   void Login(const std::string&, const std::string&);
 
+	bool Rename(const std::string& old_name, const std::string& new_name);
+
 	std::vector<std::string> GetDirList();
+
   unsigned int GetFileSize(const std::string& filename);
 
   void DownloadFile(const std::string& filename);
+
   void UploadFile(const std::string& filename);
 };
 
