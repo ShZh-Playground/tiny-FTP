@@ -50,9 +50,9 @@ bool Client::MakeDir(const std::string& dirname) {
 	return this->control_socket_.GetStatus() == 257;
 }
 
-vector<string> Client::GetDirList() {
+vector<string> Client::GetDirList(const std::string& target_dir) {
   EnterPassiveMode();
-  SendControlMessage("LIST");
+  SendControlMessage("LIST " + target_dir);
   // 接受返回来的data_socket返回的所有输出
   stringstream dir_info;
 	dir_info << this->data_socket_.GetResponse();
@@ -151,11 +151,6 @@ void Client::EnterPassiveMode() {
   cout << data_socket_info << endl;
   // 计算端口号并创建数字套接字
 	this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_, data_socket_info);
-}
-
-void Client::GetListByMLSD() {
-	EnterPassiveMode();
-	SendControlMessage("MLSD /");
 }
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {

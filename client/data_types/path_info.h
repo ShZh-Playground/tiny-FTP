@@ -15,6 +15,7 @@ struct PathInfo {
   string time_ = "";
   bool is_dir_ = false;
   unsigned int size_ = -1;
+	string absolute_path = "";
 
 	PathInfo(const string& date, const string& time, const string& dir_or_size,const string& name)
       : name_(name), date_(date), time_(time) {

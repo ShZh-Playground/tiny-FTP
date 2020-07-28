@@ -81,11 +81,11 @@ void TestChangeWD(const string& dir) {
 
 int main() {
   // TestDownload("image.jpg");
-  // TestListDir();
+  TestListDir();
   // TestRenameServerFile("zj.m", "szj.m");
   // TestRemoveFile("szj.m");
   // TestCreateFolder("test_folder");
   // TestPWD();
-	TestChangeWD("fuck");
+	// TestChangeWD("fuck");
   return 0;
 }

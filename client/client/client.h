@@ -18,7 +18,7 @@ class IClient {
 	virtual ~IClient() {}
 
   virtual void Login(const std::string& username, const std::string& password)=0;
-  virtual std::vector<std::string> GetDirList() = 0;
+  virtual std::vector<std::string> GetDirList(const std::string&) = 0;
 	virtual bool MakeDir(const std::string& dirname)=0;
 
 	virtual bool ChangeWorkingDir(const std::string&)=0;
@@ -29,7 +29,6 @@ class IClient {
   virtual bool RemoveFile(const std::string& filename)=0;
 	virtual bool Rename(const std::string& old_name, const std::string& new_name)=0;
   virtual unsigned int GetFileSize(const std::string& filename)=0;
-	virtual void GetListByMLSD()=0;
 };
 
 class Client: public IClient {
@@ -39,8 +38,6 @@ class Client: public IClient {
   DataSocket data_socket_;
 
 	void EnterPassiveMode();
-
-	// void GetListByLIST();
 
  public:
   Client(const std::string& ip_address, unsigned int port);
@@ -56,9 +53,7 @@ class Client: public IClient {
 
 	bool MakeDir(const std::string& dirname);
 
-	void GetListByMLSD();
-
-	std::vector<std::string> GetDirList();
+	std::vector<std::string> GetDirList(const std::string&);
 
 	bool ChangeWorkingDir(const std::string&);
 
