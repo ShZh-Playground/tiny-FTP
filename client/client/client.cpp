@@ -37,6 +37,11 @@ bool Client::Rename(const std::string& old_name, const std::string& new_name) {
   return this->control_socket_.GetStatus() == 250;
 }
 
+bool Client::RemoveFile(const std::string& filename) {
+	SendControlMessage("DELE " + filename);
+	return this->control_socket_.GetStatus() == 250;
+}
+
 vector<string> Client::GetDirList() {
   EnterPassiveMode();
   SendControlMessage("LIST");

@@ -24,6 +24,7 @@ class IClient {
 	virtual unsigned int GetFileSize(const std::string& filename)=0;
 	virtual void DownloadFile(const std::string& filename)=0;
   virtual void UploadFile(const std::string& filename)=0;
+  virtual bool RemoveFile(const std::string& filename)=0;
 };
 
 class Client: public IClient {
@@ -41,6 +42,8 @@ class Client: public IClient {
   void Login(const std::string&, const std::string&);
 
 	bool Rename(const std::string& old_name, const std::string& new_name);
+
+	bool RemoveFile(const std::string& filename);
 
 	std::vector<std::string> GetDirList();
 

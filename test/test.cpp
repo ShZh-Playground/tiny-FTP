@@ -46,13 +46,20 @@ void TestGetFileSize(const std::string& filename) {
 
 void TestRenameServerFile(const std::string& old_name, const std::string& new_name) {
   auto iclient = Initialize();
-	cout << iclient->Rename(old_name, new_name) << endl << endl;
+  cout << std::boolalpha << iclient->Rename(old_name, new_name) << endl << endl;
   delete iclient;
+}
+
+void TestRemoveFile(const std::string& filename) {
+	auto iclient = Initialize();
+	cout << std::boolalpha << iclient->RemoveFile(filename) << endl;
+	delete iclient;
 }
 
 int main() {
 	// TestDownload("image.jpg");
 	// TestListDir();
-	TestRenameServerFile("zj.m", "szj.m");
+	// TestRenameServerFile("zj.m", "szj.m");
+	TestRemoveFile("szj.m");
   return 0;
 }
