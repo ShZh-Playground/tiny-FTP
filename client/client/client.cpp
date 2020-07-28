@@ -64,33 +64,38 @@ unsigned int Client::GetFileSize(const std::string& filename) {
 
 void Client::DownloadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
+  SendControlMessage("TYPE I");	// 二进制传输
   SendControlMessage("RETR " + filename);
   // 创建文件
-  auto file = ofstream(filename, ios::out);
-  if (!file) {
-    cout << "未能打开文件!" << endl;
-    exit(1);
+  auto file = ofstream(filename, ios::out | ios::binary);
+	AssertFileExisted(file);
+	// 利用字节流下载文件
+  int length = 0;
+  char receive_buffer[kBufferSize] = {0};
+  while ((length = this->data_socket_.Receive(receive_buffer, kBufferSize)) != 0) {
+		file.write(receive_buffer, length);
+		cout << "Buffer receive: " << length << endl;
   }
-	file << this->data_socket_.GetResponse();
+
+  file.seekp(0, ios::end);      //设置文件指针到文件流的尾部
+  streampos ps = file.tellp();  //读取文件指针的位置
+  cout << "File size: " << ps << endl << endl;
   file.close();
+
   CloseDataSocket;
 }
 
 void Client::UploadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
-  SendControlMessage("TYPE I");
+  SendControlMessage("TYPE I");	// 二进制传输
   SendControlMessage("STOR " + filename);
   // 打开文件
   auto file = ifstream(filename, ios::in | ios::binary);
-  if (!file) {
-    cout << "未能找到文件！" << endl;
-    exit(1);
-  }
+	AssertFileExisted(file);
   // 通过读取文件内容并发送来完成上传
   char send_buffer[kBufferSize] = {0};
   while (!file.eof()) {
     file.read(send_buffer, kBufferSize);
-		cout << file.gcount() << endl;
     this->data_socket_.Send(send_buffer, file.gcount());
   }
   file.close();
