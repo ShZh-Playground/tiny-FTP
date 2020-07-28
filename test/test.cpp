@@ -59,7 +59,13 @@ void TestRemoveFile(const std::string& filename) {
 void TestCreateFolder(const std::string& foldername) {
   auto iclient = Initialize();
   cout << std::boolalpha << iclient->MakeDir(foldername) << endl << endl;
-	delete iclient;
+  delete iclient;
+}
+
+void TestPWD() {
+	auto iclient = Initialize();
+	cout << iclient->GetWorkingDir() << endl;
+  delete iclient;
 }
 
 int main() {
@@ -67,6 +73,7 @@ int main() {
   // TestListDir();
   // TestRenameServerFile("zj.m", "szj.m");
   // TestRemoveFile("szj.m");
-	TestCreateFolder("test_folder");
+  // TestCreateFolder("test_folder");
+	TestPWD();
   return 0;
 }

@@ -72,6 +72,26 @@ vector<string> Client::GetDirList() {
   return dir.GetFilesName();
 }
 
+bool Client::ChangeWorkingDir(const std::string& dirname) { 
+	SendControlMessage("CWD " + dirname);
+	return this->control_socket_.GetStatus() == 250;
+}
+
+std::string Client::GetWorkingDir() {
+	const string get_dir_message = "PWD" + CRLF;
+	this->control_socket_.Send(get_dir_message);
+	const string dir_info = this->control_socket_.GetResponse();
+	// 双引号中间的内容就是WD
+	auto first_quot = dir_info.find_first_of("\"");
+	auto last_quot = dir_info.find_last_of("\"");
+	if (last_quot <= first_quot) {
+		cout << "没有找到Working Dirctory" << endl << endl;
+		exit(1);
+	}
+	const string working_dir = dir_info.substr(first_quot + 1, last_quot - first_quot - 1);
+	return working_dir;
+}
+
 unsigned int Client::GetFileSize(const std::string& filename) {
   const string file_size_message = "SIZE " + filename + CRLF;
   this->control_socket_.Send(file_size_message);

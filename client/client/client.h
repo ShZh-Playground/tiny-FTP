@@ -21,7 +21,8 @@ class IClient {
   virtual std::vector<std::string> GetDirList() = 0;
 	virtual bool MakeDir(const std::string& dirname)=0;
 
-	// virtual bool ChangeWorkingDir(const std::string);
+	virtual bool ChangeWorkingDir(const std::string&)=0;
+	virtual std::string GetWorkingDir()=0;
 	
 	virtual void DownloadFile(const std::string& filename)=0;
   virtual void UploadFile(const std::string& filename)=0;
@@ -58,6 +59,10 @@ class Client: public IClient {
 	void GetListByMLSD();
 
 	std::vector<std::string> GetDirList();
+
+	bool ChangeWorkingDir(const std::string&);
+
+	std::string GetWorkingDir();
 
   unsigned int GetFileSize(const std::string& filename);
 
