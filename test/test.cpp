@@ -45,6 +45,7 @@ void TestGetFileSize(const std::string& filename) {
 }
 
 int main() {
-	TestDownload("image.jpg");
+	// TestDownload("image.jpg");
+	TestListDir();
   return 0;
 }

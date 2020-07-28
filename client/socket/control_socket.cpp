@@ -28,10 +28,21 @@ const std::string ControlSocket::GetResponse() {
     std::cout << "没有接收到数据" << std::endl;
     exit(1);
   }
+	this->response_ = buffer;
+	SetStatusCode();
   return buffer;
 }
 
+unsigned int ControlSocket::GetStatus() { return this->status_code_; }
+
 void ControlSocket::Close() { this->socket_.Close(); }
+
+void ControlSocket::SetStatusCode() { 
+	if (this->response_ != "") {
+		this->status_code_ = atoi(this->response_.substr(0, 3).c_str());
+	}
+}
+
 
 unsigned int ControlSocket::ResolveDataSocketPort(
     const std::string& data_socket_info) {

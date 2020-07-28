@@ -76,12 +76,7 @@ void Client::DownloadFile(const string& filename) {
 		file.write(receive_buffer, length);
 		cout << "Buffer receive: " << length << endl;
   }
-
-  file.seekp(0, ios::end);      //设置文件指针到文件流的尾部
-  streampos ps = file.tellp();  //读取文件指针的位置
-  cout << "File size: " << ps << endl << endl;
   file.close();
-
   CloseDataSocket;
 }
 

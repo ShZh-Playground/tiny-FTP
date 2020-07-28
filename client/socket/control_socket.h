@@ -7,7 +7,11 @@
 class ControlSocket {
  private:
 	 FTPSocket socket_;
-	unsigned int ResolveDataSocketPort(const std::string& data_socket_info);
+	 std::string response_ = "";
+	 unsigned int status_code_ = 0;
+
+	 void SetStatusCode();
+	 unsigned int ResolveDataSocketPort(const std::string& data_socket_info);
 
  public:
 	 ControlSocket() {}
@@ -19,6 +23,7 @@ class ControlSocket {
 
 	 void Send(const std::string& data);
    const std::string GetResponse();
+	 unsigned int GetStatus();
 
 	 void Close();
 };
