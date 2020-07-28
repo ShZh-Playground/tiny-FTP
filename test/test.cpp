@@ -63,9 +63,20 @@ void TestCreateFolder(const std::string& foldername) {
 }
 
 void TestPWD() {
-	auto iclient = Initialize();
-	cout << iclient->GetWorkingDir() << endl;
+  auto iclient = Initialize();
+  cout << iclient->GetWorkingDir() << endl;
   delete iclient;
+}
+
+void TestChangeWD(const string& dir) {
+	auto iclient = Initialize();
+	iclient->ChangeWorkingDir(dir);
+	cout << iclient->GetWorkingDir() << endl;
+	auto file_names = iclient->GetDirList();
+  for (auto file : file_names) {
+    cout << file << endl;
+  }
+	delete iclient;
 }
 
 int main() {
@@ -74,6 +85,7 @@ int main() {
   // TestRenameServerFile("zj.m", "szj.m");
   // TestRemoveFile("szj.m");
   // TestCreateFolder("test_folder");
-	TestPWD();
+  // TestPWD();
+	TestChangeWD("fuck");
   return 0;
 }

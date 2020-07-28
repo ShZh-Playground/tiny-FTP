@@ -74,7 +74,11 @@ vector<string> Client::GetDirList() {
 
 bool Client::ChangeWorkingDir(const std::string& dirname) { 
 	SendControlMessage("CWD " + dirname);
-	return this->control_socket_.GetStatus() == 250;
+	if (GetWorkingDir() != "") {
+		return control_socket_.GetStatus() == 250;
+	} else {
+		return false;
+	}
 }
 
 std::string Client::GetWorkingDir() {
@@ -88,8 +92,9 @@ std::string Client::GetWorkingDir() {
 		cout << "没有找到Working Dirctory" << endl << endl;
 		exit(1);
 	}
-	const string working_dir = dir_info.substr(first_quot + 1, last_quot - first_quot - 1);
-	return working_dir;
+	// 判断失败的情况
+	return this->control_socket_.GetStatus()
+            ? dir_info.substr(first_quot + 1, last_quot - first_quot - 1) : "";
 }
 
 unsigned int Client::GetFileSize(const std::string& filename) {
