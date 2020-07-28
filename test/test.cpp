@@ -15,13 +15,14 @@ int main()
   IClient* client = GetClient("192.168.176.1");
   client->Login("shzh", "123456");
 
-	// client->DownloadFile("fuck.txt");
+	// client->DownloadFile("zj.m");
+	client->UploadFile("image.jpg");
 
-	 // 列出所有目录
-	auto file_names = client->GetDirList();
-	for (auto file : file_names) {
-		cout << file << endl;
-	}
+	// // 列出所有目录
+	//auto file_names = client->GetDirList();
+	//for (auto file : file_names) {
+	//	cout << file << endl;
+	//}
 
 	// // 获取服务器文件的大小
 	// cout << "FileSize: " << client->GetFileSize("zj.m") << endl;

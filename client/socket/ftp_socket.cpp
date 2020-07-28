@@ -33,9 +33,8 @@ FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
 
 FTPSocket::~FTPSocket() {}
 
-void FTPSocket::SendData(const std::string send_data) {
-  const char* send_data_c = send_data.c_str();
-  send(this->socket_, send_data_c, strlen(send_data_c), 0);
+void FTPSocket::SendData(const char* send_data, unsigned int length) {
+  send(this->socket_, send_data, length, 0);
 }
 
 int FTPSocket::ReceiveData(char* receive_buffer, unsigned int buffer_size) {

@@ -17,7 +17,7 @@ class DataSocket {
 
   std::string GetResponse();
 
-	void Send(std::string send_data);
+	void Send(const char* send_data, unsigned int length);
   unsigned int Receive(char* receive_buffer, unsigned int buffer_size);
 
 	void Close();

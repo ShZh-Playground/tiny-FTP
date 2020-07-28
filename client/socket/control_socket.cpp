@@ -17,7 +17,7 @@ DataSocket ControlSocket::GetDataSocket(const std::string& ip_address, const std
 }
 
 void ControlSocket::Send(const std::string& data) {
-  this->socket_.SendData(data);
+  this->socket_.SendData(data.c_str(), data.size());
 }
 
 const std::string ControlSocket::GetResponse() {

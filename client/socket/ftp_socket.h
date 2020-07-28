@@ -14,7 +14,7 @@ class FTPSocket {
   FTPSocket(const std::string ip_address, unsigned int port);
   ~FTPSocket();
 
-  void SendData(const std::string send_data);
+  void SendData(const char* send_data, unsigned int length);
   int ReceiveData(char* receive_buffer, unsigned int buffer_size);
   void Close();
 };

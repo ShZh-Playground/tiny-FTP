@@ -38,7 +38,6 @@ class Client: public IClient {
   ~Client();
 
   void Login(const std::string&, const std::string&);
-  //const std::string ReceiveMessage();
 
 	std::vector<std::string> GetDirList();
   unsigned int GetFileSize(const std::string& filename);

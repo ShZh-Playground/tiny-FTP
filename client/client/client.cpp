@@ -24,7 +24,6 @@ Client::~Client() {
   this->control_socket_.Close();
 }
 
-
 void Client::Login(const string& username, const string& password) {
   // 先传输用户名，再传密码（这里有先后顺序）
   SendControlMessage("USER " + username);
@@ -67,7 +66,7 @@ void Client::DownloadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
   SendControlMessage("RETR " + filename);
   // 创建文件
-  auto file = ofstream(filename, ios::out || ios::binary);
+  auto file = ofstream(filename, ios::out);
   if (!file) {
     cout << "未能打开文件!" << endl;
     exit(1);
@@ -79,9 +78,10 @@ void Client::DownloadFile(const string& filename) {
 
 void Client::UploadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
+  SendControlMessage("TYPE I");
   SendControlMessage("STOR " + filename);
   // 打开文件
-  auto file = ifstream(filename, ios::in || ios::binary);
+  auto file = ifstream(filename, ios::in | ios::binary);
   if (!file) {
     cout << "未能找到文件！" << endl;
     exit(1);
@@ -90,7 +90,8 @@ void Client::UploadFile(const string& filename) {
   char send_buffer[kBufferSize] = {0};
   while (!file.eof()) {
     file.read(send_buffer, kBufferSize);
-    this->data_socket_.Send(string(send_buffer));
+		cout << file.gcount() << endl;
+    this->data_socket_.Send(send_buffer, file.gcount());
   }
   file.close();
   CloseDataSocket;
