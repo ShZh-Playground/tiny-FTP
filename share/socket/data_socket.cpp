@@ -1,5 +1,7 @@
 #include "data_socket.h"
 
+using namespace Socket;
+
 DataSocket::DataSocket(const std::string& ip_address, unsigned int port)
     : socket_(FTPSocket(ip_address, port)), port_(port) {}
 

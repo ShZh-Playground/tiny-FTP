@@ -3,26 +3,30 @@
 #include <string>
 #include "ftp_socket.h"
 
-class DataSocket {
- private:
-  enum Mode { PASV, PORT_STRICT, PORT };
+namespace Socket {
+	class DataSocket {
+	 private:
+		enum Mode { PASV, PORT_STRICT, PORT };
 
-  FTPSocket socket_;
-	unsigned int port_;
+		FTPSocket socket_;
+		unsigned int port_;
 
- public:
-  DataSocket() {};
-  DataSocket(const FTPSocket& ftp_socket);
-  DataSocket(const std::string& ip_address, unsigned int port);
-  ~DataSocket() {};
+	 public:
+		DataSocket(){};
+		DataSocket(const FTPSocket& ftp_socket);
+		DataSocket(const std::string& ip_address, unsigned int port);
+		~DataSocket(){};
 
-  std::string GetResponse();
+		std::string GetResponse();
 
-	void Send(const char* send_data, unsigned int length);
+		void Send(const char* send_data, unsigned int length);
 
-  unsigned int Receive(char* receive_buffer, unsigned int buffer_size);
+		unsigned int Receive(char* receive_buffer, unsigned int buffer_size);
 
-	unsigned int GetPort();
+		unsigned int GetPort();
 
-	void Close();
-};
+		void Close();
+	};
+}
+
+

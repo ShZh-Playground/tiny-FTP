@@ -12,14 +12,14 @@
 #include "../share/socket/data_socket.h"
 #include "../share/socket/control_socket.h"
 
-using namespace std;
+using namespace ClientSpace;
 
-Client::Client(const string& ip_address, unsigned int port = 21)
+ClientSpace::Client::Client(const string& ip_address, unsigned int port = 21)
     : ip_address_(ip_address), control_socket_(ControlSocket(ip_address, port)) {
   PrintMessage();
 }
 
-Client::~Client() {
+ClientSpace::Client::~Client() {
   // 给服务器发送QUIT并关闭socket
   SendControlMessage("QUIT");
 	if (this->control_socket_.GetStatus() != 221) {
@@ -38,22 +38,22 @@ bool Client::Login(const string& username, const string& password) {
 	return this->control_socket_.GetStatus() == 230;
 }
 
-bool Client::Rename(const std::string& old_name, const std::string& new_name) {
+bool Client::Rename(const string& old_name, const string& new_name) {
 	SendControlMessage("RNFR " + old_name);
 	if (this->control_socket_.GetStatus() != 350) return false;
 	SendControlMessage("RNTO " + new_name);
   return this->control_socket_.GetStatus() == 250;
 }
 
-bool Client::RemoveFile(const std::string& filename) {
+bool Client::RemoveFile(const string& filename) {
 	SendControlMessage("DELE " + filename);
 	return this->control_socket_.GetStatus() == 250;
 }
 
-bool Client::RemoveDir(const std::string& dirname) {
+bool Client::RemoveDir(const string& dirname) {
 	return true; }
 
-bool Client::MakeDir(const std::string& dirname) {
+bool Client::MakeDir(const string& dirname) {
 	SendControlMessage("MKD " + dirname);
 	auto status = this->control_socket_.GetStatus();
 	if (status != 257 && status != 226) {
@@ -86,7 +86,7 @@ vector<PathInfo> Client::GetDirList(const string& target_dir) {
   return ftp_path_info;
 }
 
-void Client::UploadDir(const std::string& dirname) {
+void Client::UploadDir(const string& dirname) {
 	if (MakeDir(dirname)) {
     auto path_list = File::GetPathInfoInDir(dirname);
     for (auto path : path_list) {
@@ -100,7 +100,7 @@ void Client::UploadDir(const std::string& dirname) {
 	}
 }
 
-void Client::DownloadDir(const std::string& dirname) {
+void Client::DownloadDir(const string& dirname) {
 	File::CreateFolder(dirname);
 	auto dir_content = GetDirList(dirname);
 	for (PathInfo pi : dir_content) {
@@ -115,12 +115,12 @@ void Client::DownloadDir(const std::string& dirname) {
 	}
 }
 
-bool Client::ChangeWorkingDir(const std::string& dirname) { 
+bool Client::ChangeWorkingDir(const string& dirname) { 
 	SendControlMessage("CWD " + dirname);
 	return GetWorkingDir() == ""? false : control_socket_.GetStatus() == 250;
 }
 
-std::string Client::GetWorkingDir() {
+string Client::GetWorkingDir() {
 	const string get_dir_message = "PWD" + CRLF;
 	this->control_socket_.Send(get_dir_message);
 	const string dir_info = this->control_socket_.GetResponse();
@@ -136,7 +136,7 @@ std::string Client::GetWorkingDir() {
             ? dir_info.substr(first_quot + 1, last_quot - first_quot - 1) : "";
 }
 
-int Client::GetFileSize(const std::string& filename) {
+int Client::GetFileSize(const string& filename) {
   stringstream file_size_info;
 	file_size_info << SendControlMessage("SIZE " + filename);
 	unsigned int status = this->control_socket_.GetStatus();
@@ -184,7 +184,7 @@ void Client::DownloadFileWithCheckPoint(const string& filename) {
   }
 }
 
-void Client::UploadFileWithCheckPoint(const std::string& filename, int server_file_size) {
+void Client::UploadFileWithCheckPoint(const string& filename, int server_file_size) {
   auto file = ifstream(filename, ios::out | ios::binary);
   AssertFileExisted(file);
   file.seekg(0, ios::end);
@@ -224,19 +224,19 @@ void Client::EnterPassiveMode() {
                                                              data_socket_info);
 }
 
-const std::string Client::PrintMessage() {
+const string Client::PrintMessage() {
   auto response = this->control_socket_.GetResponse();
-  std::cout << response << std::endl;
+  cout << response << endl;
 	return response;
 }
 
-const std::string Client::SendControlMessage(const std::string& command) {
+const string Client::SendControlMessage(const string& command) {
   const string message = command + CRLF;
   this->control_socket_.Send(message);
 	const string ret = PrintMessage();
 	return ret;
 }
 
-extern "C" DLL_API IClient* GetClient(const string ip_address) {
+extern "C" DLL_API IClient* GetClient(const std::string ip_address) {
   return new Client(ip_address);
 }

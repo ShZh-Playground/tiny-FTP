@@ -3,6 +3,8 @@
 #include <io.h>
 #include "file.h"
 
+using namespace FileSystem;
+
 bool File::IsDirectory(const string& path) {
 	WIN32_FIND_DATAA find_file_data;
 	FindFirstFileA(path.c_str(), &find_file_data);

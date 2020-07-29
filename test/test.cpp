@@ -7,7 +7,7 @@
 
 #pragma comment(lib, "client.lib")
 
-using namespace std;
+using namespace ClientSpace;
 
 IClient* Initialize() {
   iostream::sync_with_stdio(false);

@@ -2,6 +2,8 @@
 #include <vector>
 #include "control_socket.h"
 
+using namespace Socket;
+
 ControlSocket::ControlSocket(const FTPSocket& ftp_socket) {
 	this->socket_ = ftp_socket;
 }

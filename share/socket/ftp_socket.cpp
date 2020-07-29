@@ -6,6 +6,8 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
+using namespace Socket;
+
 FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
   // ¼ÓÔØÌ×½Ó×Ö
   WORD sock_version = MAKEWORD(2, 2);
