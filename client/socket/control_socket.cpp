@@ -12,7 +12,7 @@ ControlSocket::ControlSocket(const std::string& ip_address, unsigned int port) {
 
 DataSocket ControlSocket::GetDataSocket(const std::string& ip_address, const std::string& data_socket_info) { 
 	unsigned int target_port = ResolveDataSocketPort(data_socket_info);
-  std::cout << target_port << std::endl << std::endl;
+  std::cout << "Data socket sending port: " << target_port << std::endl << std::endl;
   return DataSocket(ip_address, target_port);
 }
 

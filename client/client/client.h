@@ -17,7 +17,7 @@ class IClient {
  public:
 	virtual ~IClient() {}
 
-  virtual void Login(const std::string& username, const std::string& password)=0;
+  virtual bool Login(const std::string& username, const std::string& password)=0;
   virtual std::vector<std::string> GetDirList(const std::string&) = 0;
 	virtual bool MakeDir(const std::string& dirname)=0;
 
@@ -38,6 +38,8 @@ class Client: public IClient {
   DataSocket data_socket_;
 
 	void EnterPassiveMode();
+	const std::string PrintMessage();
+	const std::string SendControlMessage(const std::string&);
   void DownloadFileWithCheckPoint(const std::string& filename);
 	void UploadFileWithCheckPoint(const std::string& filename, int server_file_size);
 
@@ -45,7 +47,7 @@ class Client: public IClient {
   Client(const std::string& ip_address, unsigned int port);
   ~Client();
 
-  void Login(const std::string&, const std::string&);
+  bool Login(const std::string&, const std::string&);
 
 	bool Rename(const std::string& old_name, const std::string& new_name);
 

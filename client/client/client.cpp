@@ -25,9 +25,10 @@ Client::~Client() {
   this->control_socket_.Close();
 }
 
-void Client::Login(const string& username, const string& password) {
+bool Client::Login(const string& username, const string& password) {
   SendControlMessage("USER " + username);
   SendControlMessage("PASS " + password);
+	return this->control_socket_.GetStatus() == 230;
 }
 
 bool Client::Rename(const std::string& old_name, const std::string& new_name) {
@@ -86,7 +87,7 @@ std::string Client::GetWorkingDir() {
 	auto last_quot = dir_info.find_last_of("\"");
 	if (last_quot <= first_quot) {
 		cout << "没有找到Working Dirctory" << endl << endl;
-		exit(1);
+		return "";
 	}
 	// 判断失败的情况
 	return this->control_socket_.GetStatus()
@@ -94,11 +95,10 @@ std::string Client::GetWorkingDir() {
 }
 
 int Client::GetFileSize(const std::string& filename) {
-  const string file_size_message = "SIZE " + filename + CRLF;
-  this->control_socket_.Send(file_size_message);
   stringstream file_size_info;
-	file_size_info << this->control_socket_.GetResponse();
+	file_size_info << SendControlMessage("SIZE " + filename);
 	if (this->control_socket_.GetStatus() == 550 || this->control_socket_.GetStatus() == 451) { return -1; }
+	// 利用stream的特性自动解析空格
 	int numbers[2];
 	file_size_info >> numbers[0] >> numbers[1];
 	return numbers[1];
@@ -137,8 +137,7 @@ void Client::DownloadFileWithCheckPoint(const string& filename) {
   }
 }
 
-void Client::UploadFileWithCheckPoint(const std::string& filename,
-                                      int server_file_size) {
+void Client::UploadFileWithCheckPoint(const std::string& filename, int server_file_size) {
   auto file = ifstream(filename, ios::out | ios::binary);
   AssertFileExisted(file);
   file.seekg(0, ios::end);
@@ -171,14 +170,22 @@ void Client::UploadFile(const string& filename) {
 }
 
 void Client::EnterPassiveMode() {
-  // 向服务器传输进入被动模式的指令
-  const string passive_mode_message = "PASV" + CRLF;
-  this->control_socket_.Send(passive_mode_message);
-  // 接受服务器信息
-  const string data_socket_info = this->control_socket_.GetResponse();
+  const string data_socket_info = SendControlMessage("PASV");
   cout << data_socket_info << endl;
-  // 计算端口号并创建数字套接字
+  // 根据服务器返回的信息创建数据套接字
 	this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_, data_socket_info);
+}
+
+const std::string Client::PrintMessage() {
+  auto response = this->control_socket_.GetResponse();
+  std::cout << response << std::endl;
+	return response;
+}
+
+const std::string Client::SendControlMessage(const std::string& command) {
+  const string message = command + CRLF;
+  this->control_socket_.Send(message);
+  return PrintMessage();
 }
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {
