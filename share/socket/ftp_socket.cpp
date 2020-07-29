@@ -9,19 +9,19 @@
 using namespace Socket;
 
 FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
-  // 加载套接字
+  // Load socket
   WORD sock_version = MAKEWORD(2, 2);
   WSADATA data;
   if (WSAStartup(sock_version, &data) != 0) {
     std::cout << "Web Server API启动失败！" << std::endl;
     exit(-1);
   };
-  // 创建socket
+  // Create socket
   if ((this->socket_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
     std::cout << "创建socket失败！" << std::endl;
     exit(-1);
   }
-  // 绑定IP和端口
+  // Bind Ip and port
   memset(&this->socaddr_, 0, sizeof(this->socaddr_));
   this->socaddr_.sin_family = AF_INET;
   this->socaddr_.sin_port = htons(port);

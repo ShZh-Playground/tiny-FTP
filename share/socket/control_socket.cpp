@@ -47,7 +47,7 @@ void ControlSocket::SetStatusCode() {
 
 unsigned int ControlSocket::ResolveDataSocketPort(
     const std::string& data_socket_info) {
-  // 找到()中的内容
+  // find content in double parentheses
   auto left_parentheses = data_socket_info.find("(");
   auto right_parentheses = data_socket_info.rfind(")");
   if (right_parentheses <= left_parentheses) {
@@ -58,11 +58,11 @@ unsigned int ControlSocket::ResolveDataSocketPort(
   const std::string target_socket =
       data_socket_info.substr(left_parentheses + 1, socket_length);
   int socket_info[6];
-  // 利用sscanf直接提取格式化字符串中的数字内容
+	// Using sscanf to get the numbers in formatted string
   sscanf_s(target_socket.c_str(), "%d,%d,%d,%d,%d,%d", &socket_info[0],
            &socket_info[1], &socket_info[2], &socket_info[3], &socket_info[4],
            &socket_info[5]);
-  // 新端口号计算公式：倒数第二个数 X 256 + 最后一个数
+  // New port = 2nd_2_last_number * 256 + last_number
   unsigned int target_port = socket_info[4] * 256 + socket_info[5];
 
   return target_port;

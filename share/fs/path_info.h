@@ -30,7 +30,7 @@ namespace FileSystem {
 		}
 		PathInfo(stringstream& ss) {
 			vector<string> prop(4);
-			ss >> prop[0] >> prop[1] >> prop[2] >> prop[3];  // 每行用空格分隔四个信息
+			ss >> prop[0] >> prop[1] >> prop[2] >> prop[3];  // Separator is space
 			new (this) PathInfo(prop[0], prop[1], prop[2], prop[3]);  // Placement new
 		}
 		~PathInfo() {}

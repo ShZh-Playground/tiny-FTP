@@ -18,7 +18,8 @@ namespace ClientSpace {
 	using namespace Socket;
 	using namespace FileSystem;
 
-	// 利用COM的思想，使用接口导出其子类
+	// Using thought of COM
+	// export its subclass by interface
 	class IClient {
 	 public:
 		virtual ~IClient() {}

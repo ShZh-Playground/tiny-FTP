@@ -4,7 +4,7 @@
 #include <vector>
 #include "path_info.h"
 
-// 封装Windows API得到的仿现代语言的File类
+// Encapsulate Windows API to get modern languages' File class
 namespace FileSystem {
 	namespace File {
 		bool IsDirectory(const string& path);
