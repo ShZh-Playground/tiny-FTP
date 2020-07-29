@@ -28,7 +28,7 @@ class IClient {
   virtual void UploadFile(const std::string& filename)=0;
   virtual bool RemoveFile(const std::string& filename)=0;
 	virtual bool Rename(const std::string& old_name, const std::string& new_name)=0;
-  virtual unsigned int GetFileSize(const std::string& filename)=0;
+  virtual int GetFileSize(const std::string& filename)=0;
 };
 
 class Client: public IClient {
@@ -60,7 +60,7 @@ class Client: public IClient {
 
 	std::string GetWorkingDir();
 
-  unsigned int GetFileSize(const std::string& filename);
+  int GetFileSize(const std::string& filename);
 
   void DownloadFile(const std::string& filename);
 

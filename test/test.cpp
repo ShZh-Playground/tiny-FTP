@@ -87,7 +87,7 @@ int main() {
   // TestCreateFolder("test_folder");
   // TestPWD();
 	// TestChangeWD("fuck");zh
-	TestDownload("zh.txt");
-	// TestGetFileSize("zh.txt");
+	// TestDownload("zh.txt");
+	// TestGetFileSize("NMSL.tt");
   return 0;
 }

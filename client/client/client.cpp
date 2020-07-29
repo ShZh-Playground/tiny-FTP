@@ -26,7 +26,6 @@ Client::~Client() {
 }
 
 void Client::Login(const string& username, const string& password) {
-  // 先传输用户名，再传密码（这里有先后顺序）
   SendControlMessage("USER " + username);
   SendControlMessage("PASS " + password);
 }
@@ -88,18 +87,18 @@ std::string Client::GetWorkingDir() {
 	if (last_quot <= first_quot) {
 		cout << "没有找到Working Dirctory" << endl << endl;
 		exit(1);
-
 	}
 	// 判断失败的情况
 	return this->control_socket_.GetStatus()
             ? dir_info.substr(first_quot + 1, last_quot - first_quot - 1) : "";
 }
 
-unsigned int Client::GetFileSize(const std::string& filename) {
+int Client::GetFileSize(const std::string& filename) {
   const string file_size_message = "SIZE " + filename + CRLF;
   this->control_socket_.Send(file_size_message);
   stringstream file_size_info;
 	file_size_info << this->control_socket_.GetResponse();
+	if (this->control_socket_.GetStatus() == 550 || this->control_socket_.GetStatus() == 451) { return -1; }
 	int numbers[2];
 	file_size_info >> numbers[0] >> numbers[1];
 	return numbers[1];
@@ -108,6 +107,7 @@ unsigned int Client::GetFileSize(const std::string& filename) {
 void Client::DownloadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
   SendControlMessage("TYPE I");	// 二进制传输
+
 	if (!experimental::filesystem::exists(filename)) {
     // 正常上传
     auto file = ofstream(filename, ios::out | ios::binary);
@@ -139,22 +139,18 @@ void Client::DownloadFileWithCheckPoint(const string& filename) {
 
 void Client::UploadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
-	//if (experimental::filesystem::exists(filename)) {
-	//	unsigned int local_file_size = GetFileSize()
-	//}
   SendControlMessage("TYPE I");	// 二进制传输
-  SendControlMessage("STOR " + filename);
-  // 打开文件
-  auto file = ifstream(filename, ios::in | ios::binary);
-	AssertFileExisted(file);
-  // 通过读取文件内容并发送来完成上传
-  char send_buffer[kBufferSize] = {0};
-  while (!file.eof()) {
-    file.read(send_buffer, kBufferSize);
-    this->data_socket_.Send(send_buffer, file.gcount());
-  }
-  file.close();
-  CloseDataSocket;
+
+	if (!experimental::filesystem::exists(filename)) {
+		// 正常下载
+		SendControlMessage("STOR " + filename);
+		auto file = ifstream(filename, ios::in | ios::binary);
+		AssertFileExisted(file);
+		UploadFileByBuffer(file);
+		file.close();
+	} else {
+	}
+	CloseDataSocket;  
 }
 
 void Client::EnterPassiveMode() {

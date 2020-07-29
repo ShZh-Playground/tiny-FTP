@@ -38,12 +38,22 @@ const unsigned int kBufferSize = 1024;
     }                                             \
   } while (0)
 
-#define DownloadFileByBuffer(file)	\
+#define DownloadFileByBuffer(file)                                    \
+  do {                                                                \
+    int length = 0;                                                   \
+    char receive_buffer[kBufferSize] = {0};                           \
+    while ((length = this->data_socket_.Receive(receive_buffer,       \
+                                                kBufferSize)) != 0) { \
+      file.write(receive_buffer, length);                             \
+      cout << "Buffer receive: " << length << endl;                   \
+    }                                                                 \
+  } while (0)
+
+#define UploadFileByBuffer(file)\
 	do {\
-		int length = 0;\
-		char receive_buffer[kBufferSize] = {0};\
-		while ((length = this->data_socket_.Receive(receive_buffer, kBufferSize)) !=0) {\
-			file.write(receive_buffer, length);\
-			cout << "Buffer receive: " << length << endl;\
+		char send_buffer[kBufferSize] = {0};\
+		while (!file.eof()) {\
+			file.read(send_buffer, kBufferSize);\
+			this->data_socket_.Send(send_buffer, file.gcount());\
 		}\
-	}while (0) 
+	} while (0)
