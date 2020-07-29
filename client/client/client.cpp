@@ -7,16 +7,16 @@
 #define _DLL_EXPORTS
 #include "client.h"
 #include "utils.h"
+#include "file.h"
 #include "../socket/data_socket.h"
 #include "../socket/control_socket.h"
-#include "../data_types/dir.h"
 #include "../data_types/path_info.h"
 
 using namespace std;
 
 Client::Client(const string& ip_address, unsigned int port = 21)
     : ip_address_(ip_address), control_socket_(ControlSocket(ip_address, port)) {
-  PrintMessage;
+  PrintMessage();
 }
 
 Client::~Client() {
@@ -57,14 +57,14 @@ bool Client::MakeDir(const std::string& dirname) {
 	return this->control_socket_.GetStatus() == 257;
 }
 
-vector<string> Client::GetDirList(const std::string& target_dir) {
+vector<PathInfo> Client::GetDirList(const string& target_dir) {
   EnterPassiveMode();
   SendControlMessage("LIST " + target_dir);
   // 接受返回来的data_socket返回的所有输出
   stringstream dir_info;
 	dir_info << this->data_socket_.GetResponse();
   // 返回的格式类似于cmd dir指令（Windows系统）
-  Dir dir;
+  vector<PathInfo> ftp_path_info;
   string line;
   stringstream line_resovler;
   while (!dir_info.eof()) {
@@ -72,11 +72,19 @@ vector<string> Client::GetDirList(const std::string& target_dir) {
     if (!dir_info.eof()) {    // 舍弃最后一空白行
       line_resovler << line;
 			PathInfo pi(line_resovler);
-      dir.Push(pi);
+      ftp_path_info.push_back(pi);
     }
   }
   CloseDataSocket;
-  return dir.GetFilesName();
+  return ftp_path_info;
+}
+
+bool Client::UploadDir(const std::string& dirname) {
+	auto file_list = File::GetPathInfoInDir(dirname);
+	for (auto file : file_list) {
+		cout << file << endl << endl;
+	}
+	return true;
 }
 
 bool Client::ChangeWorkingDir(const std::string& dirname) { 

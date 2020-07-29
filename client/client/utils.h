@@ -27,7 +27,7 @@ const unsigned int kBufferSize = 1024;
 #define CloseDataSocket         \
   do {                          \
     this->data_socket_.Close(); \
-    PrintMessage;               \
+    PrintMessage();               \
   } while (0)
 
 #define AssertFileExisted(file)                   \

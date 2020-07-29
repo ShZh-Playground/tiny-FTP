@@ -92,11 +92,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;TINYFTP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -150,8 +154,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="client\client.h" />
+    <ClInclude Include="client\file.h" />
     <ClInclude Include="client\utils.h" />
-    <ClInclude Include="data_types\dir.h" />
     <ClInclude Include="data_types\path_info.h" />
     <ClInclude Include="socket\control_socket.h" />
     <ClInclude Include="socket\data_socket.h" />
@@ -161,7 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client\client.cpp" />
-    <ClCompile Include="data_types\dir.cpp" />
+    <ClCompile Include="client\file.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="socket\control_socket.cpp" />
     <ClCompile Include="socket\data_socket.cpp" />

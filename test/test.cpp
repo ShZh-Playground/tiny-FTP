@@ -32,7 +32,7 @@ void TestListDir() {
   auto iclient = Initialize();
   auto file_names = iclient->GetDirList("");
   for (auto file : file_names) {
-    cout << file << endl;
+    cout << file.name_ << endl;
   }
   delete iclient;
 }
@@ -69,13 +69,19 @@ void TestPWD() {
 }
 
 void TestChangeWD(const string& dir) {
-	auto iclient = Initialize();
-	iclient->ChangeWorkingDir(dir);
-	cout << iclient->GetWorkingDir() << endl;
-	auto file_names = iclient->GetDirList("");
+  auto iclient = Initialize();
+  iclient->ChangeWorkingDir(dir);
+  cout << iclient->GetWorkingDir() << endl;
+  auto file_names = iclient->GetDirList("");
   for (auto file : file_names) {
-    cout << file << endl;
+    cout << file.name_ << endl;
   }
+  delete iclient;
+}
+
+void TestChangeStaticFile() {
+	auto iclient = Initialize();
+	cout << std::boolalpha << iclient->UploadDir("test") << endl << endl;
 	delete iclient;
 }
 
@@ -86,9 +92,10 @@ int main() {
   // TestRemoveFile("szj.m");
   // TestCreateFolder("test_folder");
   // TestPWD();
-	// TestChangeWD("fuck");zh
-	// TestDownload("zh.txt");
-	// TestGetFileSize("NMSL.tt");
-	TestUpload("zh.txt");
+  // TestChangeWD("fuck");zh
+  // TestDownload("zh.txt");
+  // TestGetFileSize("NMSL.tt");
+  // TestUpload("zh.txt");
+	TestChangeStaticFile();
   return 0;
 }
