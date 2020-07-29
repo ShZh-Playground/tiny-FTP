@@ -56,7 +56,12 @@ bool Client::RemoveDir(const std::string& dirname) {
 bool Client::MakeDir(const std::string& dirname) {
 	SendControlMessage("MKD " + dirname);
 	auto status = this->control_socket_.GetStatus();
-	return status == 257 || status == 226;
+	if (status != 257 && status != 226) {
+		PrintMessage();
+		return false;
+	} else {
+		return true;
+	}
 }
 
 vector<PathInfo> Client::GetDirList(const string& target_dir) {

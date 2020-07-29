@@ -1,6 +1,6 @@
 ﻿// test.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束
-#include "pch.h"
 #include <fstream>
+#include "pch.h"
 #include <iostream>
 #include <string>
 #include "../client/client/client.h"
@@ -80,15 +80,21 @@ void TestChangeWD(const string& dir) {
 }
 
 void TestChangeStaticFile() {
-	auto iclient = Initialize();
-	// cout << iclient->GetFileSize("test\\test2\\test2.txt");
-	cout << std::boolalpha << iclient->UploadDir("test") << endl << endl;
-	delete iclient;
+  auto iclient = Initialize();
+  // cout << iclient->GetFileSize("test\\test2\\test2.txt");
+  cout << std::boolalpha << iclient->UploadDir("test") << endl << endl;
+  delete iclient;
 }
 
 void TestDownloadDir() {
+  auto iclient = Initialize();
+  iclient->DownloadDir("test");
+  delete iclient;
+}
+
+void TestMakeFolder() {
 	auto iclient = Initialize();
-	iclient->DownloadDir("test");
+	iclient->MakeDir("test_folder");
 	delete iclient;
 }
 
@@ -103,9 +109,10 @@ int main() {
   // TestDownload("zh.txt");
   // TestGetFileSize("NMSL.tt");
   // TestUpload("zh.txt");
-	// TestChangeStaticFile();
+  // TestChangeStaticFile();
   // TestDownloadDir();
-	// TestDownload("test\\test2\\test2.txt");
-	TestDownloadDir();
+  // TestDownload("test\\test2\\test2.txt");
+  // TestDownloadDir();
+  TestMakeFolder();
   return 0;
 }
