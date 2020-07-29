@@ -86,6 +86,12 @@ void TestChangeStaticFile() {
 	delete iclient;
 }
 
+void TestDownloadDir() {
+	auto iclient = Initialize();
+	iclient->DownloadDir("test");
+	delete iclient;
+}
+
 int main() {
   // TestDownload("image.jpg");
   // TestListDir();
@@ -98,6 +104,8 @@ int main() {
   // TestGetFileSize("NMSL.tt");
   // TestUpload("zh.txt");
 	// TestChangeStaticFile();
-  TestChangeStaticFile();
+  // TestDownloadDir();
+	// TestDownload("test\\test2\\test2.txt");
+	TestDownloadDir();
   return 0;
 }

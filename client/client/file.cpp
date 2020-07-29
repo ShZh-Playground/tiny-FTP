@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <iostream>
 #include <io.h>
 #include "file.h"
 
@@ -36,5 +37,12 @@ vector<string> File::GetPathInfoInDir(const string& dir_name) {
 		return result;
 	} else {
 		return vector<string>();
+	}
+}
+
+void File::CreateFolder(const string& folder_name) {
+	const char* folder_name_c = folder_name.c_str();
+  if (GetFileAttributesA(folder_name_c) & FILE_ATTRIBUTE_DIRECTORY) {
+    CreateDirectoryA(folder_name_c, NULL);
 	}
 }

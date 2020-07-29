@@ -24,6 +24,7 @@ class IClient {
   virtual std::vector<PathInfo> GetDirList(const std::string&) = 0;
   virtual bool MakeDir(const std::string& dirname) = 0;
 	virtual bool UploadDir(const std::string& dirname)=0;
+	virtual bool DownloadDir(const std::string& dirname)=0;
 
   virtual bool ChangeWorkingDir(const std::string&) = 0;
   virtual std::string GetWorkingDir() = 0;
@@ -67,6 +68,8 @@ class Client : public IClient {
   std::vector<PathInfo> GetDirList(const std::string&);
 
 	bool UploadDir(const std::string& dirname);
+
+	bool DownloadDir(const std::string& dirname);
 
   bool ChangeWorkingDir(const std::string&);
 

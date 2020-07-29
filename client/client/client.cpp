@@ -98,6 +98,22 @@ bool Client::UploadDir(const std::string& dirname) {
 	}
 }
 
+bool Client::DownloadDir(const std::string& dirname) {
+	File::CreateFolder(dirname);
+	auto dir_content = GetDirList(dirname);
+	for (PathInfo pi : dir_content) {
+		const string abs_path = dirname + "\\" + pi.name_;
+    cout << abs_path << endl;
+		if (pi.is_dir_) { 
+			DownloadDir(abs_path);
+		} else {
+			DownloadFile(abs_path);
+		}
+		cout << "Download " << pi.name_ << " finished." << endl;
+	}
+	return true;
+}
+
 bool Client::ChangeWorkingDir(const std::string& dirname) { 
 	SendControlMessage("CWD " + dirname);
 	return GetWorkingDir() == ""? false : control_socket_.GetStatus() == 250;
@@ -139,6 +155,7 @@ void Client::DownloadFile(const string& filename) {
 
 	if (!experimental::filesystem::exists(filename)) {
     // 正常上传
+		SendControlMessage("RETR " + filename);
     auto file = ofstream(filename, ios::out | ios::binary);
     AssertFileExisted(file);
     DownloadFileByBuffer(file);
@@ -201,7 +218,6 @@ void Client::UploadFile(const string& filename) {
 
 void Client::EnterPassiveMode() {
     const string data_socket_info = SendControlMessage("PASV");
-		cout << data_socket_info << endl;
     // 根据服务器返回的信息创建数据套接字
 		this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_,
                                                              data_socket_info);
@@ -210,7 +226,6 @@ void Client::EnterPassiveMode() {
 const std::string Client::PrintMessage() {
   auto response = this->control_socket_.GetResponse();
   std::cout << response << std::endl;
-	std::cout << this->control_socket_.GetStatus() << std::endl;
 	return response;
 }
 
