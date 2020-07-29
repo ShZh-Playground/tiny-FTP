@@ -1,9 +1,9 @@
 ﻿// test.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束
-#include <fstream>
 #include "pch.h"
+#include <fstream>
 #include <iostream>
 #include <string>
-#include "../client/client/client.h"
+#include "../client/client.h"
 
 #pragma comment(lib, "client.lib")
 
@@ -82,7 +82,7 @@ void TestChangeWD(const string& dir) {
 void TestChangeStaticFile() {
   auto iclient = Initialize();
   // cout << iclient->GetFileSize("test\\test2\\test2.txt");
-  cout << std::boolalpha << iclient->UploadDir("test") << endl << endl;
+	iclient->UploadDir("test");
   delete iclient;
 }
 

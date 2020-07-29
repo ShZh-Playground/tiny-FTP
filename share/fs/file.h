@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "../data_types/path_info.h"
+#include "path_info.h"
 
 // 封装Windows API得到的仿现代语言的File类
 namespace File {

@@ -153,23 +153,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="client\client.h" />
-    <ClInclude Include="client\file.h" />
-    <ClInclude Include="client\utils.h" />
-    <ClInclude Include="data_types\path_info.h" />
-    <ClInclude Include="socket\control_socket.h" />
-    <ClInclude Include="socket\data_socket.h" />
-    <ClInclude Include="socket\ftp_socket.h" />
+    <ClInclude Include="..\share\fs\file.h" />
+    <ClInclude Include="..\share\fs\path_info.h" />
+    <ClInclude Include="..\share\socket\control_socket.h" />
+    <ClInclude Include="..\share\socket\data_socket.h" />
+    <ClInclude Include="..\share\socket\ftp_socket.h" />
+    <ClInclude Include="client.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client\client.cpp" />
-    <ClCompile Include="client\file.cpp" />
+    <ClCompile Include="..\share\fs\file.cpp" />
+    <ClCompile Include="..\share\socket\control_socket.cpp" />
+    <ClCompile Include="..\share\socket\data_socket.cpp" />
+    <ClCompile Include="..\share\socket\ftp_socket.cpp" />
+    <ClCompile Include="client.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="socket\control_socket.cpp" />
-    <ClCompile Include="socket\data_socket.cpp" />
-    <ClCompile Include="socket\ftp_socket.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

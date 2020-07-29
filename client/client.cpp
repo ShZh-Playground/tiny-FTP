@@ -7,10 +7,10 @@
 #define _DLL_EXPORTS
 #include "client.h"
 #include "utils.h"
-#include "file.h"
-#include "../socket/data_socket.h"
-#include "../socket/control_socket.h"
-#include "../data_types/path_info.h"
+#include "../share/fs/file.h"
+#include "../share/fs/path_info.h"
+#include "../share/socket/data_socket.h"
+#include "../share/socket/control_socket.h"
 
 using namespace std;
 
@@ -57,7 +57,7 @@ bool Client::MakeDir(const std::string& dirname) {
 	SendControlMessage("MKD " + dirname);
 	auto status = this->control_socket_.GetStatus();
 	if (status != 257 && status != 226) {
-		PrintMessage();
+		PrintMessage();	// Receive server's error message
 		return false;
 	} else {
 		return true;
@@ -86,7 +86,7 @@ vector<PathInfo> Client::GetDirList(const string& target_dir) {
   return ftp_path_info;
 }
 
-bool Client::UploadDir(const std::string& dirname) {
+void Client::UploadDir(const std::string& dirname) {
 	if (MakeDir(dirname)) {
     auto path_list = File::GetPathInfoInDir(dirname);
     for (auto path : path_list) {
@@ -97,13 +97,10 @@ bool Client::UploadDir(const std::string& dirname) {
       }
       cout << "Upload " << path << " finished." << endl;
     }
-    return true;
-	} else {
-		return false;
 	}
 }
 
-bool Client::DownloadDir(const std::string& dirname) {
+void Client::DownloadDir(const std::string& dirname) {
 	File::CreateFolder(dirname);
 	auto dir_content = GetDirList(dirname);
 	for (PathInfo pi : dir_content) {
@@ -116,7 +113,6 @@ bool Client::DownloadDir(const std::string& dirname) {
 		}
 		cout << "Download " << pi.name_ << " finished." << endl;
 	}
-	return true;
 }
 
 bool Client::ChangeWorkingDir(const std::string& dirname) { 

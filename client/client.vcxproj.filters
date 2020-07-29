@@ -18,28 +18,28 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="data_types\path_info.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="socket\data_socket.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="socket\ftp_socket.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="client\client.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="client\utils.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="socket\control_socket.h">
+    <ClInclude Include="..\share\socket\control_socket.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="client\file.h">
+    <ClInclude Include="..\share\socket\data_socket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\share\socket\ftp_socket.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="client.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\share\fs\file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\share\fs\path_info.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,22 +50,22 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="socket\data_socket.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="socket\ftp_socket.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="client\client.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="socket\control_socket.cpp">
+    <ClCompile Include="..\share\socket\control_socket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="client\file.cpp">
+    <ClCompile Include="..\share\socket\data_socket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\share\socket\ftp_socket.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\share\fs\file.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

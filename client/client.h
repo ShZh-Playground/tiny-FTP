@@ -2,10 +2,10 @@
 
 #include <string>
 #include <vector>
-#include "../socket/control_socket.h"
-#include "../socket/data_socket.h"
-#include "../socket/ftp_socket.h"
-#include "../data_types/path_info.h"
+#include "../share/socket/data_socket.h"
+#include "../share/socket/control_socket.h"
+#include "../share/socket/ftp_socket.h"
+#include "../share/fs/path_info.h"
 
 #ifdef _DLL_EXPORTS
 #define DLL_API _declspec(dllexport)
@@ -23,8 +23,8 @@ class IClient {
                      const std::string& password) = 0;
   virtual std::vector<PathInfo> GetDirList(const std::string&) = 0;
   virtual bool MakeDir(const std::string& dirname) = 0;
-	virtual bool UploadDir(const std::string& dirname)=0;
-	virtual bool DownloadDir(const std::string& dirname)=0;
+	virtual void UploadDir(const std::string& dirname)=0;
+  virtual void DownloadDir(const std::string& dirname) = 0;
 
   virtual bool ChangeWorkingDir(const std::string&) = 0;
   virtual std::string GetWorkingDir() = 0;
@@ -67,9 +67,9 @@ class Client : public IClient {
 
   std::vector<PathInfo> GetDirList(const std::string&);
 
-	bool UploadDir(const std::string& dirname);
+	void DownloadDir(const std::string& dirname);
 
-	bool DownloadDir(const std::string& dirname);
+  void UploadDir(const std::string& dirname);
 
   bool ChangeWorkingDir(const std::string&);
 
