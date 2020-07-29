@@ -22,8 +22,14 @@ Client::Client(const string& ip_address, unsigned int port = 21)
 Client::~Client() {
   // 给服务器发送QUIT并关闭socket
   SendControlMessage("QUIT");
+	if (this->control_socket_.GetStatus() != 221) {
+		cout << "未能关闭连接！开始强制关闭!" << endl << endl;
+		exit(1);
+	}
   this->control_socket_.Close();
 }
+
+void Client::Help() { SendControlMessage("HELP"); }
 
 bool Client::Login(const string& username, const string& password) {
   SendControlMessage("USER " + username);

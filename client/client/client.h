@@ -17,6 +17,7 @@ class IClient {
  public:
 	virtual ~IClient() {}
 
+	virtual void Help()=0;
   virtual bool Login(const std::string& username, const std::string& password)=0;
   virtual std::vector<std::string> GetDirList(const std::string&) = 0;
 	virtual bool MakeDir(const std::string& dirname)=0;
@@ -46,6 +47,8 @@ class Client: public IClient {
  public:
   Client(const std::string& ip_address, unsigned int port);
   ~Client();
+
+	void Help();
 
   bool Login(const std::string&, const std::string&);
 
