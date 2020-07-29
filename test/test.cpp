@@ -81,6 +81,7 @@ void TestChangeWD(const string& dir) {
 
 void TestChangeStaticFile() {
 	auto iclient = Initialize();
+	// cout << iclient->GetFileSize("test\\test2\\test2.txt");
 	cout << std::boolalpha << iclient->UploadDir("test") << endl << endl;
 	delete iclient;
 }
@@ -96,6 +97,7 @@ int main() {
   // TestDownload("zh.txt");
   // TestGetFileSize("NMSL.tt");
   // TestUpload("zh.txt");
-	TestChangeStaticFile();
+	// TestChangeStaticFile();
+  TestChangeStaticFile();
   return 0;
 }

@@ -24,6 +24,7 @@ Client::~Client() {
   SendControlMessage("QUIT");
 	if (this->control_socket_.GetStatus() != 221) {
 		cout << "未能关闭连接！开始强制关闭!" << endl << endl;
+		this->control_socket_.Close();
 		exit(1);
 	}
   this->control_socket_.Close();
@@ -54,7 +55,8 @@ bool Client::RemoveDir(const std::string& dirname) {
 
 bool Client::MakeDir(const std::string& dirname) {
 	SendControlMessage("MKD " + dirname);
-	return this->control_socket_.GetStatus() == 257;
+	auto status = this->control_socket_.GetStatus();
+	return status == 257 || status == 226;
 }
 
 vector<PathInfo> Client::GetDirList(const string& target_dir) {
@@ -80,11 +82,20 @@ vector<PathInfo> Client::GetDirList(const string& target_dir) {
 }
 
 bool Client::UploadDir(const std::string& dirname) {
-	auto file_list = File::GetPathInfoInDir(dirname);
-	for (auto file : file_list) {
-		cout << file << endl << endl;
+	if (MakeDir(dirname)) {
+    auto path_list = File::GetPathInfoInDir(dirname);
+    for (auto path : path_list) {
+      if (File::IsDirectory(path)) {
+        UploadDir(path);
+      } else {
+        UploadFile(path);
+      }
+      cout << "Upload " << path << " finished." << endl;
+    }
+    return true;
+	} else {
+		return false;
 	}
-	return true;
 }
 
 bool Client::ChangeWorkingDir(const std::string& dirname) { 
@@ -111,7 +122,11 @@ std::string Client::GetWorkingDir() {
 int Client::GetFileSize(const std::string& filename) {
   stringstream file_size_info;
 	file_size_info << SendControlMessage("SIZE " + filename);
-	if (this->control_socket_.GetStatus() == 550 || this->control_socket_.GetStatus() == 451) { return -1; }
+	unsigned int status = this->control_socket_.GetStatus();
+	if (status == 550 || status == 451) { 
+		PrintMessage();
+		return -1;
+	}
 	// 利用stream的特性自动解析空格
 	int numbers[2];
 	file_size_info >> numbers[0] >> numbers[1];
@@ -170,36 +185,40 @@ void Client::UploadFile(const string& filename) {
   SendControlMessage("TYPE I");	// 二进制传输
 
 	int server_file_size = GetFileSize(filename);
-	if (server_file_size != -1) {
-		// 正常下载
+	if (server_file_size == -1) {
+		// 正常上传
 		SendControlMessage("STOR " + filename);
 		auto file = ifstream(filename, ios::in | ios::binary);
 		AssertFileExisted(file);
 		UploadFileByBuffer(file);
 		file.close();
 	} else {
+		// 断点续传
 		UploadFileWithCheckPoint(filename, server_file_size);
 	}
 	CloseDataSocket;  
 }
 
 void Client::EnterPassiveMode() {
-  const string data_socket_info = SendControlMessage("PASV");
-  cout << data_socket_info << endl;
-  // 根据服务器返回的信息创建数据套接字
-	this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_, data_socket_info);
+    const string data_socket_info = SendControlMessage("PASV");
+		cout << data_socket_info << endl;
+    // 根据服务器返回的信息创建数据套接字
+		this->data_socket_ = this->control_socket_.GetDataSocket(this->ip_address_,
+                                                             data_socket_info);
 }
 
 const std::string Client::PrintMessage() {
   auto response = this->control_socket_.GetResponse();
   std::cout << response << std::endl;
+	std::cout << this->control_socket_.GetStatus() << std::endl;
 	return response;
 }
 
 const std::string Client::SendControlMessage(const std::string& command) {
   const string message = command + CRLF;
   this->control_socket_.Send(message);
-  return PrintMessage();
+	const string ret = PrintMessage();
+	return ret;
 }
 
 extern "C" DLL_API IClient* GetClient(const string ip_address) {
