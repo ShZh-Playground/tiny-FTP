@@ -38,6 +38,7 @@ class Client: public IClient {
   DataSocket data_socket_;
 
 	void EnterPassiveMode();
+  void DownloadFileWithCheckPoint(const std::string& filename);
 
  public:
   Client(const std::string& ip_address, unsigned int port);

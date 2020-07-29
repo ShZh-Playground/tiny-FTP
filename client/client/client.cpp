@@ -108,29 +108,33 @@ unsigned int Client::GetFileSize(const std::string& filename) {
 void Client::DownloadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
   SendControlMessage("TYPE I");	// 二进制传输
-  auto server_file_size = GetFileSize(filename);	// 查看服务端文件大小
-
-	if (experimental::filesystem::exists(filename)) {
-    auto file = ofstream(filename, ios::out | ios::binary | ios::app);
+	if (!experimental::filesystem::exists(filename)) {
+    // 正常上传
+    auto file = ofstream(filename, ios::out | ios::binary);
     AssertFileExisted(file);
-		// 查看文件大小顺便将文件指针移到末尾
-		file.seekp(0, ios::end);
-		auto local_file_size = file.tellp();
-		// 开启断点重传
-		if (local_file_size != server_file_size) {
-			SendControlMessage("REST " + to_string(local_file_size));
-			SendControlMessage("RETR " + filename);
-			DownloadFileByBuffer(file);
-			file.close();
-		}
+    DownloadFileByBuffer(file);
+    file.close();
 	} else {
-		// 创建文件
-		auto file = ofstream(filename, ios::out | ios::binary);
-		AssertFileExisted(file);
-		DownloadFileByBuffer(file);
-		file.close();
+		// 断点续传
+		DownloadFileWithCheckPoint(filename);
 	}
   CloseDataSocket;
+}
+
+void Client::DownloadFileWithCheckPoint(const string& filename) {
+  auto file = ofstream(filename, ios::out | ios::binary | ios::app);
+  AssertFileExisted(file);
+  // 查看文件大小顺便将文件指针移到末尾
+  file.seekp(0, ios::end);
+  auto local_file_size = file.tellp();
+  auto server_file_size = GetFileSize(filename);
+  // 开启断点重传
+  if (local_file_size != server_file_size) {
+    SendControlMessage("REST " + to_string(local_file_size));
+    SendControlMessage("RETR " + filename);
+    DownloadFileByBuffer(file);
+    file.close();
+  }
 }
 
 void Client::UploadFile(const string& filename) {
