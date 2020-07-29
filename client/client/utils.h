@@ -30,11 +30,20 @@ const unsigned int kBufferSize = 1024;
     PrintMessage;               \
   } while (0)
 
-#define AssertFileExisted(file)                         \
-do {                                            \
-    if (!file) {                                \
+#define AssertFileExisted(file)                   \
+  do {                                            \
+    if (!file) {                                  \
       std::cout << "未能找到文件！" << std::endl; \
-      exit(1);                                  \
-    }                                           \
+      exit(1);                                    \
+    }                                             \
   } while (0)
 
+#define DownloadFileByBuffer(file)	\
+	do {\
+		int length = 0;\
+		char receive_buffer[kBufferSize] = {0};\
+		while ((length = this->data_socket_.Receive(receive_buffer, kBufferSize)) !=0) {\
+			file.write(receive_buffer, length);\
+			cout << "Buffer receive: " << length << endl;\
+		}\
+	}while (0) 

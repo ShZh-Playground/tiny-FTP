@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -74,11 +75,7 @@ vector<string> Client::GetDirList(const std::string& target_dir) {
 
 bool Client::ChangeWorkingDir(const std::string& dirname) { 
 	SendControlMessage("CWD " + dirname);
-	if (GetWorkingDir() != "") {
-		return control_socket_.GetStatus() == 250;
-	} else {
-		return false;
-	}
+	return GetWorkingDir() == ""? false : control_socket_.GetStatus() == 250;
 }
 
 std::string Client::GetWorkingDir() {
@@ -91,6 +88,7 @@ std::string Client::GetWorkingDir() {
 	if (last_quot <= first_quot) {
 		cout << "没有找到Working Dirctory" << endl << endl;
 		exit(1);
+
 	}
 	// 判断失败的情况
 	return this->control_socket_.GetStatus()
@@ -110,23 +108,36 @@ unsigned int Client::GetFileSize(const std::string& filename) {
 void Client::DownloadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
   SendControlMessage("TYPE I");	// 二进制传输
-  SendControlMessage("RETR " + filename);
-  // 创建文件
-  auto file = ofstream(filename, ios::out | ios::binary);
-	AssertFileExisted(file);
-	// 利用字节流下载文件
-  int length = 0;
-  char receive_buffer[kBufferSize] = {0};
-  while ((length = this->data_socket_.Receive(receive_buffer, kBufferSize)) != 0) {
-		file.write(receive_buffer, length);
-		cout << "Buffer receive: " << length << endl;
-  }
-  file.close();
+  auto server_file_size = GetFileSize(filename);	// 查看服务端文件大小
+
+	if (experimental::filesystem::exists(filename)) {
+    auto file = ofstream(filename, ios::out | ios::binary | ios::app);
+    AssertFileExisted(file);
+		// 查看文件大小顺便将文件指针移到末尾
+		file.seekp(0, ios::end);
+		auto local_file_size = file.tellp();
+		// 开启断点重传
+		if (local_file_size != server_file_size) {
+			SendControlMessage("REST " + to_string(local_file_size));
+			SendControlMessage("RETR " + filename);
+			DownloadFileByBuffer(file);
+			file.close();
+		}
+	} else {
+		// 创建文件
+		auto file = ofstream(filename, ios::out | ios::binary);
+		AssertFileExisted(file);
+		DownloadFileByBuffer(file);
+		file.close();
+	}
   CloseDataSocket;
 }
 
 void Client::UploadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
+	//if (experimental::filesystem::exists(filename)) {
+	//	unsigned int local_file_size = GetFileSize()
+	//}
   SendControlMessage("TYPE I");	// 二进制传输
   SendControlMessage("STOR " + filename);
   // 打开文件

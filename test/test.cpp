@@ -30,7 +30,7 @@ void TestUpload(const std::string& filename) {
 
 void TestListDir() {
   auto iclient = Initialize();
-  auto file_names = iclient->GetDirList();
+  auto file_names = iclient->GetDirList("");
   for (auto file : file_names) {
     cout << file << endl;
   }
@@ -39,7 +39,7 @@ void TestListDir() {
 
 void TestGetFileSize(const std::string& filename) {
   auto iclient = Initialize();
-  cout << "FileSize: " << iclient->GetFileSize("zj.m") << endl << endl;
+  cout << "FileSize: " << iclient->GetFileSize(filename) << endl << endl;
   delete iclient;
 }
 
@@ -72,7 +72,7 @@ void TestChangeWD(const string& dir) {
 	auto iclient = Initialize();
 	iclient->ChangeWorkingDir(dir);
 	cout << iclient->GetWorkingDir() << endl;
-	auto file_names = iclient->GetDirList();
+	auto file_names = iclient->GetDirList("");
   for (auto file : file_names) {
     cout << file << endl;
   }
@@ -81,11 +81,13 @@ void TestChangeWD(const string& dir) {
 
 int main() {
   // TestDownload("image.jpg");
-  TestListDir();
+  // TestListDir();
   // TestRenameServerFile("zj.m", "szj.m");
   // TestRemoveFile("szj.m");
   // TestCreateFolder("test_folder");
   // TestPWD();
-	// TestChangeWD("fuck");
+	// TestChangeWD("fuck");zh
+	TestDownload("zh.txt");
+	// TestGetFileSize("zh.txt");
   return 0;
 }
