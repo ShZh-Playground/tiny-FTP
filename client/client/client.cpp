@@ -137,11 +137,27 @@ void Client::DownloadFileWithCheckPoint(const string& filename) {
   }
 }
 
+void Client::UploadFileWithCheckPoint(const std::string& filename,
+                                      int server_file_size) {
+  auto file = ifstream(filename, ios::out | ios::binary);
+  AssertFileExisted(file);
+  file.seekg(0, ios::end);
+  auto local_file_size = file.tellg();
+  if (local_file_size > server_file_size) {
+    SendControlMessage("REST " + to_string(server_file_size));
+    SendControlMessage("STOR " + filename);
+    file.seekg(local_file_size);  // 移动指针
+    UploadFileByBuffer(file);
+    file.close();
+  }
+}
+
 void Client::UploadFile(const string& filename) {
   EnterPassiveMode();  // 先进入被动模式
   SendControlMessage("TYPE I");	// 二进制传输
 
-	if (!experimental::filesystem::exists(filename)) {
+	int server_file_size = GetFileSize(filename);
+	if (server_file_size != -1) {
 		// 正常下载
 		SendControlMessage("STOR " + filename);
 		auto file = ifstream(filename, ios::in | ios::binary);
@@ -149,6 +165,7 @@ void Client::UploadFile(const string& filename) {
 		UploadFileByBuffer(file);
 		file.close();
 	} else {
+		UploadFileWithCheckPoint(filename, server_file_size);
 	}
 	CloseDataSocket;  
 }

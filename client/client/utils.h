@@ -49,11 +49,11 @@ const unsigned int kBufferSize = 1024;
     }                                                                 \
   } while (0)
 
-#define UploadFileByBuffer(file)\
-	do {\
-		char send_buffer[kBufferSize] = {0};\
-		while (!file.eof()) {\
-			file.read(send_buffer, kBufferSize);\
-			this->data_socket_.Send(send_buffer, file.gcount());\
-		}\
-	} while (0)
+#define UploadFileByBuffer(file)                           \
+  do {                                                     \
+    char send_buffer[kBufferSize] = {0};                   \
+    while (!file.eof()) {                                  \
+      file.read(send_buffer, kBufferSize);                 \
+      this->data_socket_.Send(send_buffer, file.gcount()); \
+    }                                                      \
+  } while (0)

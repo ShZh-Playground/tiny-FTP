@@ -39,6 +39,7 @@ class Client: public IClient {
 
 	void EnterPassiveMode();
   void DownloadFileWithCheckPoint(const std::string& filename);
+	void UploadFileWithCheckPoint(const std::string& filename, int server_file_size);
 
  public:
   Client(const std::string& ip_address, unsigned int port);

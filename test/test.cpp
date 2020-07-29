@@ -89,5 +89,6 @@ int main() {
 	// TestChangeWD("fuck");zh
 	// TestDownload("zh.txt");
 	// TestGetFileSize("NMSL.tt");
+	TestUpload("zh.txt");
   return 0;
 }
