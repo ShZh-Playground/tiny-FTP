@@ -62,7 +62,10 @@ namespace GUI
         String remote_path = root;
         public String REMOTE_PATH
         {
-            get { return remote_path; }
+            get 
+            {
+                return new Uri(new Uri("ftp://" + IP_ADDRESS.TrimEnd('/')), remote_path).ToString();
+            }
             set 
             {
                 string result = root;
@@ -71,7 +74,7 @@ namespace GUI
                     result = Path.Combine(Path.Combine(root, value.TrimStart('/').TrimEnd('/')), "/"); // 进行路径的拼接
                 }
                 remote_path = result;
-                txt_Remote_Dic.Text = remote_path;
+                txt_Remote_Dic.Text = new Uri(new Uri("ftp://" + IP_ADDRESS.TrimEnd('/')), remote_path).ToString(); ;
             }
         }
         public String LOCAL_PICKED
@@ -206,7 +209,7 @@ namespace GUI
             lst_Remote.Items.Clear();
             lst_Remote.Items.Add("/..");
             //目录
-            DirectoryInfo dir = new DirectoryInfo(REMOTE_PATH);
+            DirectoryInfo dir = new DirectoryInfo("C:\\Users\\92887\\Desktop\\Test For FTP Server");
             foreach (DirectoryInfo d in dir.GetDirectories())
             {
                 lst_Remote.Items.Add("[目录]" + d.Name);
@@ -221,7 +224,7 @@ namespace GUI
 
         private string URLCombine(string ip_address, string remote_path, string file_name)
         {
-            string result = new Uri(new Uri(new Uri(ip_address.TrimEnd('/')), remote_path), file_name).ToString(); ;
+            string result = new Uri(new Uri(new Uri("ftp://"+ip_address.TrimEnd('/')), remote_path), file_name).ToString(); 
             return result;
         }
         private FtpWebRequest Create_Connection(string url, string method)
@@ -246,6 +249,9 @@ namespace GUI
         }
         private void btn_Default_Click(object sender, RoutedEventArgs e)
         {
+            IP_ADDRESS = "192.168.0.100";
+            PORT = 21;
+            ACCOUNT = "test";
             PASSWORD = "test";
         }
         private void btn_Connect_Click(object sender, RoutedEventArgs e)
@@ -257,18 +263,19 @@ namespace GUI
                 {
                     try
                     {
-                        String url = URLCombine(IP_ADDRESS, REMOTE_PATH, "");
+                        String url = URLCombine(IP_ADDRESS, remote_path, "");
                         ftp = (FtpWebRequest)FtpWebRequest.Create(new Uri(url));
                         ftp.Credentials = new NetworkCredential(ACCOUNT, PASSWORD);
                         connected = true;
                         txt_Connection_Info.Text += "\n连接成功！";
                         btn_Connect.Content = "断开";
-                        REMOTE_PATH = IP_ADDRESS;
+                        REMOTE_PATH = "/";
                         Remote_Refresh();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         txt_Connection_Info.Text += "\n无法连接！";
+                        txt_Connection_Info.Text += ex.Message;
                     }
                 }
                 else
