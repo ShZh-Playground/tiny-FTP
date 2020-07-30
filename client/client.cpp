@@ -11,6 +11,7 @@
 #include "../share/fs/path_info.h"
 #include "../share/socket/data_socket.h"
 #include "../share/socket/control_socket.h"
+#include "../lib/spdlog/include/spdlog/sinks/basic_file_sink.h"
 
 using namespace ClientSpace;
 
@@ -22,7 +23,7 @@ ClientSpace::Client::Client(const string& ip_address, unsigned int port = 21)
 ClientSpace::Client::~Client() {
   SendControlMessage("QUIT");
 	if (this->control_socket_.GetStatus() != 221) {
-		cout << "未能关闭连接！开始强制关闭!" << endl << endl;
+		this->logger->critical("Cannot close the connection! Start to close the connection forcely!");
 		this->control_socket_.Close();
 		exit(1);
 	}
@@ -94,7 +95,7 @@ void Client::UploadDir(const string& dirname) {
       } else {
         UploadFile(path);
       }
-      cout << "Upload " << path << " finished." << endl;
+      this->logger->info("Upload " + path + " finished.");
     }
 	}
 }
@@ -110,7 +111,7 @@ void Client::DownloadDir(const string& dirname) {
 		} else {
 			DownloadFile(abs_path);
 		}
-		cout << "Download " << pi.name_ << " finished." << endl;
+		this->logger->info("Download " + pi.name_ + " finished.");
 	}
 }
 
@@ -127,7 +128,7 @@ string Client::GetWorkingDir() {
 	auto first_quot = dir_info.find_first_of("\"");
 	auto last_quot = dir_info.find_last_of("\"");
 	if (last_quot <= first_quot) {
-		cout << "没有找到Working Dirctory" << endl << endl;
+		this->logger->warn("Cannot find working directory!");
 		return "";
 	}
 	return this->control_socket_.GetStatus()
@@ -224,15 +225,14 @@ void Client::EnterPassiveMode() {
 
 const string Client::PrintMessage() {
   auto response = this->control_socket_.GetResponse();
-  cout << response << endl;
+  logger->info(response);
 	return response;
 }
 
 const string Client::SendControlMessage(const string& command) {
   const string message = command + CRLF;
   this->control_socket_.Send(message);
-	const string ret = PrintMessage();
-	return ret;
+	return PrintMessage();
 }
 
 extern "C" DLL_API IClient* GetClient(const std::string ip_address) {

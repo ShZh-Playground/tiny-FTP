@@ -1,7 +1,8 @@
+#pragma once
+
 #include <winsock2.h>
 #include <string>
 
-#pragma once
 
 namespace Socket {
 	class FTPSocket {

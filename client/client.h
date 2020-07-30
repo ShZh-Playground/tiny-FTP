@@ -6,6 +6,7 @@
 #include "../share/socket/control_socket.h"
 #include "../share/socket/data_socket.h"
 #include "../share/socket/ftp_socket.h"
+#include "../lib/spdlog/include/spdlog/sinks/basic_file_sink.h"
 
 #ifdef _DLL_EXPORTS
 #define DLL_API _declspec(dllexport)
@@ -48,6 +49,8 @@ namespace ClientSpace {
 		const string ip_address_;
 		ControlSocket control_socket_;
 		DataSocket data_socket_;
+		shared_ptr<spdlog::logger> logger = spdlog::basic_logger_mt("basic_logger",
+                                     "message.log");
 
 		void EnterPassiveMode();
 		const string PrintMessage();

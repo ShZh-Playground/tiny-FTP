@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "../client/client.h"
+#include "../lib/spdlog/include/spdlog/sinks/basic_file_sink.h"
 
 #pragma comment(lib, "client.lib")
 

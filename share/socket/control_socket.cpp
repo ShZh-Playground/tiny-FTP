@@ -14,7 +14,7 @@ ControlSocket::ControlSocket(const std::string& ip_address, unsigned int port) {
 
 DataSocket ControlSocket::GetDataSocket(const std::string& ip_address, const std::string& data_socket_info) { 
 	unsigned int target_port = ResolveDataSocketPort(data_socket_info);
-  std::cout << "Data socket sending port: " << target_port << std::endl << std::endl;
+	std::cout << "Data socket sending port: " << target_port << std::endl;
   return DataSocket(ip_address, target_port);
 }
 
@@ -27,7 +27,7 @@ const std::string ControlSocket::GetResponse() {
   char buffer[this->socket_.kBufferSize] = {0};
 
   if ((length = this->socket_.ReceiveData(buffer, this->socket_.kBufferSize)) == -1) {
-    std::cout << "没有接收到数据" << std::endl;
+		std::cout << "Receive no data !" << std::endl;
     exit(1);
   }
 	this->response_ = buffer;
@@ -51,7 +51,7 @@ unsigned int ControlSocket::ResolveDataSocketPort(
   auto left_parentheses = data_socket_info.find("(");
   auto right_parentheses = data_socket_info.rfind(")");
   if (right_parentheses <= left_parentheses) {
-    std::cout << "未能正确解析返回的命令" << std::endl;
+		std::cout << "Cannot resolve the command that returned!" << std::endl;
     exit(-1);
   }
   auto socket_length = right_parentheses - left_parentheses - 1;

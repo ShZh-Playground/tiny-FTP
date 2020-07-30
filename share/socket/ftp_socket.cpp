@@ -13,12 +13,12 @@ FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
   WORD sock_version = MAKEWORD(2, 2);
   WSADATA data;
   if (WSAStartup(sock_version, &data) != 0) {
-    std::cout << "Web Server APIÆô¶¯Ê§°Ü£¡" << std::endl;
+		std::cout << "Web Server API start failed£¡" << std::endl;
     exit(-1);
   };
   // Create socket
   if ((this->socket_ = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
-    std::cout << "´´½¨socketÊ§°Ü£¡" << std::endl;
+		std::cout << "creat socket failed£¡" << std::endl;
     exit(-1);
   }
   // Bind Ip and port
@@ -28,7 +28,7 @@ FTPSocket::FTPSocket(const std::string ip_address, unsigned int port) {
   this->socaddr_.sin_addr.S_un.S_addr = inet_addr(ip_address.c_str());
   if (connect(this->socket_, (sockaddr*)&this->socaddr_,
               sizeof(this->socaddr_)) < 0) {
-    std::cout << "°ó¶¨Ê§°Ü£¡" << std::endl;
+		std::cout << "Binding failed£¡" << std::endl;
     exit(-1);
   }
 }

@@ -21,7 +21,7 @@ const unsigned int kBufferSize = 1024;
 #define AssertFileExisted(file)                   \
   do {                                            \
     if (!file) {                                  \
-      std::cout << "未能找到文件！" << std::endl; \
+      this->logger->critical("CANNOT FIND FILE!"); \
       exit(1);                                    \
     }                                             \
   } while (0)
@@ -33,7 +33,7 @@ const unsigned int kBufferSize = 1024;
     while ((length = this->data_socket_.Receive(receive_buffer,       \
                                                 kBufferSize)) != 0) { \
       file.write(receive_buffer, length);                             \
-      cout << "Buffer receive: " << length << endl;                   \
+			this->logger->info("Buffer receive: " + length);								\
     }                                                                 \
   } while (0)
 
