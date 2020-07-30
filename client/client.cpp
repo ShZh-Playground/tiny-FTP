@@ -50,8 +50,36 @@ bool Client::RemoveFile(const string& filename) {
 	return this->control_socket_.GetStatus() == 250;
 }
 
+void Client::DownloadDir(const string& dirname) {
+  File::CreateFolder(dirname);
+  auto dir_content = GetDirList(dirname);
+  for (PathInfo pi : dir_content) {
+    const string abs_path = dirname + "\\" + pi.name_;
+    if (pi.is_dir_) {
+      DownloadDir(abs_path);
+    } else {
+      DownloadFile(abs_path);
+    }
+    this->logger->info("Download " + pi.name_ + " finished.");
+  }
+}
+
 bool Client::RemoveDir(const string& dirname) {
-	return true; }
+	auto path_info = GetDirList(dirname);
+	if (path_info.size() != 0) {
+		for (auto pi : path_info) {
+			const string abs_path = dirname + "\\" + pi.name_;
+			if (pi.is_dir_) {
+				RemoveDir(abs_path);
+			} else {
+				RemoveFile(abs_path);
+			}
+			this->logger->info("Remove " + pi.name_ + " finished.");
+		}
+	} 
+	SendControlMessage("RMD " + dirname);
+	return true;
+}
 
 bool Client::MakeDir(const string& dirname) {
 	SendControlMessage("MKD " + dirname);
@@ -97,21 +125,6 @@ void Client::UploadDir(const string& dirname) {
       }
       this->logger->info("Upload " + path + " finished.");
     }
-	}
-}
-
-void Client::DownloadDir(const string& dirname) {
-	File::CreateFolder(dirname);
-	auto dir_content = GetDirList(dirname);
-	for (PathInfo pi : dir_content) {
-		const string abs_path = dirname + "\\" + pi.name_;
-    cout << abs_path << endl;
-		if (pi.is_dir_) { 
-			DownloadDir(abs_path);
-		} else {
-			DownloadFile(abs_path);
-		}
-		this->logger->info("Download " + pi.name_ + " finished.");
 	}
 }
 

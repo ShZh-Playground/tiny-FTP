@@ -30,6 +30,7 @@ namespace ClientSpace {
 											 const string& password) = 0;
 		virtual vector<PathInfo> GetDirList(const string&) = 0;
 		virtual bool MakeDir(const string& dirname) = 0;
+		virtual bool RemoveDir(const string& dirname) = 0;
 		virtual void UploadDir(const string& dirname) = 0;
 		virtual void DownloadDir(const string& dirname) = 0;
 

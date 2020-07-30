@@ -50,12 +50,14 @@ TEST_F(ClientTest, TestUploadFolder) { this->client->UploadDir("test"); }
 
 /*********************************Remove test*********************************/
 
-TEST_F(ClientTest, TestRemoveFile){ this->client->RemoveFile("fuck.txt"); }
+TEST_F(ClientTest, TestRemoveFile) { this->client->RemoveFile("fuck.txt"); }
+
+TEST_F(ClientTest, TestRemoveFolder){ this->client->RemoveDir("test1"); }
 
 /***********************Get server information test**************************/
 
 TEST_F(ClientTest, TestGetFileSize) {
-  ASSERT_EQ(this->client->GetFileSize("zh.txt"), 26);
+  ASSERT_EQ(this->client->GetFileSize("test1"), 26);
 }
 
 // No need to get folder size, we don't event know folder size in modern ftp
@@ -89,6 +91,6 @@ TEST_F(ClientTest, TestRenameFolder) { this->client->Rename("test", "test1"); }
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
-  ::testing::FLAGS_gtest_filter = "ClientTest.TestRemoveFile";
+  ::testing::FLAGS_gtest_filter = "ClientTest.TestRemoveFolder";
   return RUN_ALL_TESTS();
 }
