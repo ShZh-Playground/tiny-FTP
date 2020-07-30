@@ -55,11 +55,7 @@ void Client::DownloadDir(const string& dirname) {
   auto dir_content = GetDirList(dirname);
   for (PathInfo pi : dir_content) {
     const string abs_path = dirname + "\\" + pi.name_;
-    if (pi.is_dir_) {
-      DownloadDir(abs_path);
-    } else {
-      DownloadFile(abs_path);
-    }
+    pi.is_dir_? DownloadDir(abs_path) : DownloadFile(abs_path);
     this->logger->info("Download " + pi.name_ + " finished.");
   }
 }
@@ -69,11 +65,7 @@ bool Client::RemoveDir(const string& dirname) {
 	if (path_info.size() != 0) {
 		for (auto pi : path_info) {
 			const string abs_path = dirname + "\\" + pi.name_;
-			if (pi.is_dir_) {
-				RemoveDir(abs_path);
-			} else {
-				RemoveFile(abs_path);
-			}
+      pi.is_dir_? RemoveDir(abs_path) : RemoveFile(abs_path);
 			this->logger->info("Remove " + pi.name_ + " finished.");
 		}
 	} 
@@ -118,11 +110,7 @@ void Client::UploadDir(const string& dirname) {
 	if (MakeDir(dirname)) {
     auto path_list = File::GetPathInfoInDir(dirname);
     for (auto path : path_list) {
-      if (File::IsDirectory(path)) {
-        UploadDir(path);
-      } else {
-        UploadFile(path);
-      }
+      File::IsDirectory(path) ? UploadDir(path) : UploadFile(path);
       this->logger->info("Upload " + path + " finished.");
     }
 	}
@@ -134,9 +122,7 @@ bool Client::ChangeWorkingDir(const string& dirname) {
 }
 
 string Client::GetWorkingDir() {
-	const string get_dir_message = "PWD" + CRLF;
-	this->control_socket_.Send(get_dir_message);
-	const string dir_info = this->control_socket_.GetResponse();
+  const string dir_info = SendControlMessage("PWD");
 	// Working directory is in the Double quotation marks
 	auto first_quot = dir_info.find_first_of("\"");
 	auto last_quot = dir_info.find_last_of("\"");
